@@ -3,160 +3,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aura Radio Pro</title>
+<title>NOVA MUSIC — Müzik, Frekans & Doğa Sesleri Platformu</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}
-body{background:radial-gradient(circle at top,#1e1b4b,#070a12 75%);color:#f8fafc;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:14px}
-.box{width:100%;max-width:480px;background:rgba(15,23,42,.9);border:1px solid #334155;border-radius:24px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.7)}
-h1{font-size:21px;text-align:center;color:#38bdf8;margin-bottom:4px}
-.sub{text-align:center;font-size:11px;color:#94a3b8;margin-bottom:12px}
-.viz{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:40px;margin-bottom:12px;background:#090d16;border-radius:12px;padding:6px}
-.bar{width:6px;height:6px;background:linear-gradient(180deg,#38bdf8,#a855f7);border-radius:4px;transition:height .12s}
-.info{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:8px;font-size:11px;color:#bae6fd;text-align:center;margin-bottom:10px;min-height:34px;display:flex;align-items:center;justify-content:center}
-.sec{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:1px;margin:10px 0 6px;text-transform:uppercase;display:flex;justify-content:space-between}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.btn{background:#1e293b;border:1.5px solid #334155;color:#e2e8f0;padding:8px 4px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;text-align:center}
-.btn small{display:block;font-size:9px;font-weight:500;color:#94a3b8;margin-top:2px}
-.btn.on{border-color:#38bdf8;background:rgba(56,189,248,.2);color:#fff}
-.sliders{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;background:#0f172a;padding:10px;border-radius:12px}
-.sliders label{font-size:10px;color:#94a3b8;display:block;margin-bottom:4px}
-input[type=range]{width:100%;accent-color:#38bdf8}
-.play{width:100%;margin-top:12px;padding:14px;border:none;border-radius:14px;font-size:16px;font-weight:800;color:#fff;background:linear-gradient(90deg,#0284c7,#7c3aed);cursor:pointer}
+:root{
+  --bg:#060811;--panel:#0d1222;--card:#131a30;--card-hover:#1a2340;
+  --border:rgba(139,92,246,.22);--text:#f8fafc;--muted:#94a3b8;
+  --purple:#8b5cf6;--blue:#38bdf8;--pink:#ec4899;--green:#10b981;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+body{background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;padding-bottom:96px}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#283356;border-radius:6px}
+
+/* SIDEBAR */
+.side{width:240px;background:var(--panel);border-right:1px solid var(--border);padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:fixed;top:0;bottom:84px;left:0;z-index:20;overflow-y:auto}
+.brand{font-size:21px;font-weight:900;letter-spacing:1px;padding:6px 10px 16px;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:flex;align-items:center;gap:8px}
+.nav{padding:10px 12px;border-radius:12px;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s}
+.nav:hover,.nav.act{background:rgba(139,92,246,.16);color:#fff}
+.nav.act{border-left:3px solid var(--blue)}
+.div-line{height:1px;background:var(--border);margin:8px 0}
+
+/* MAIN */
+.main{margin-left:240px;flex:1;padding:22px 26px;max-width:100%}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.search{flex:1;max-width:420px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 16px;color:#fff;font-size:13px;outline:none}
+.search:focus{border-color:var(--blue)}
+.badge{background:linear-gradient(90deg,rgba(56,189,248,.15),rgba(139,92,246,.2));border:1px solid var(--border);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;color:#e0f2fe}
+
+.sec-title{font-size:18px;font-weight:800;margin:22px 0 12px;display:flex;align-items:center;justify-content:space-between}
+.sec-sub{font-size:12px;color:var(--muted);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.card:hover{background:var(--card-hover);transform:translateY(-3px);border-color:var(--border)}
+.card.playing{border-color:var(--blue);box-shadow:0 0 22px rgba(56,189,248,.22)}
+.cover{width:100%;aspect-ratio:1/1;border-radius:12px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:38px;position:relative}
+.c-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.c-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.fav-btn{position:absolute;top:10px;right:10px;background:rgba(6,8,17,.65);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px}
+
+/* FREQUENCY & NATURE PILLS */
+.freq-card{background:linear-gradient(145deg,#111830,#0b1020);border:1px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:.18s}
+.freq-card:hover,.freq-card.act{border-color:var(--blue);box-shadow:0 0 20px rgba(56,189,248,.25)}
+.hz-tag{font-size:22px;font-weight:900;color:var(--blue)}
+.nat-pill{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:8px}
+.nat-pill.act{border-color:var(--green);background:rgba(16,185,129,.12)}
+
+/* MIXER PANEL */
+.mixer{background:linear-gradient(135deg,rgba(19,26,48,.95),rgba(13,18,34,.95));border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:20px}
+.mix-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:12px}
+.mix-ch{background:#090d1a;border:1px solid rgba(255,255,255,.06);padding:12px;border-radius:12px}
+input[type=range]{width:100%;accent-color:var(--blue);margin-top:6px;cursor:pointer}
+
+/* NOVA AI */
+.ai-box{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;max-width:720px}
+.ai-input{display:flex;gap:10px;margin-top:12px}
+.ai-input input{flex:1;background:#090d1a;border:1px solid var(--border);border-radius:12px;padding:12px;color:#fff;outline:none}
+.btn-prim{background:linear-gradient(90deg,var(--blue),var(--purple));border:none;color:#fff;padding:10px 18px;border-radius:12px;font-weight:700;cursor:pointer}
+.chip{display:inline-block;background:rgba(139,92,246,.16);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:12px;margin:6px 6px 0 0;cursor:pointer}
+
+/* BOTTOM MINI PLAYER */
+.player{position:fixed;bottom:0;left:0;right:0;height:84px;background:rgba(10,14,26,.94);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:50;gap:14px}
+.p-left{display:flex;align-items:center;gap:12px;min-width:190px;cursor:pointer}
+.p-art{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.p-mid{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;max-width:480px}
+.ctrl-row{display:flex;align-items:center;gap:14px}
+.c-btn{background:none;border:none;color:#e2e8f0;font-size:18px;cursor:pointer}
+.play-circle{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.viz{display:flex;align-items:flex-end;gap:3px;height:18px}
+.vbar{width:3px;height:4px;background:var(--blue);border-radius:2px;transition:height .12s}
+.p-right{display:flex;align-items:center;gap:10px;min-width:180px;justify-content:flex-end}
+
+/* FULLSCREEN PLAYER MODAL */
+.fs-modal{position:fixed;inset:0;background:radial-gradient(circle at top,#1b1440,#060811 80%);z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
+.fs-modal.open{display:flex}
+.fs-art{width:220px;height:220px;border-radius:28px;font-size:86px;display:flex;align-items:center;justify-content:center;box-shadow:0 24px 60px rgba(139,92,246,.35);margin-bottom:22px}
+
+.view{display:none}
+.view.act{display:block}
+.note-banner{font-size:11px;color:var(--muted);background:rgba(255,255,255,.03);padding:8px 12px;border-radius:10px;margin-top:12px}
+
+@media(max-width:768px){
+  .side{width:100%;height:auto;bottom:84px;top:auto;flex-direction:row;overflow-x:auto;padding:8px;border-right:none;border-top:1px solid var(--border)}
+  .brand,.div-line{display:none}
+  .nav{white-space:nowrap;padding:8px 12px;font-size:12px}
+  .main{margin-left:0;padding:16px 14px 70px}
+  .p-right{display:none}
+}
 </style>
 </head>
 <body>
-<div class="box">
-  <h1>🎧 AURA RADIO & FREKANS STÜDYOSU</h1>
-  <p class="sub">7/24 Lofi • Phonk • Solfeggio & Binaural Beyin Dalgaları</p>
-  <div class="viz" id="viz"></div>
-  <div class="info" id="desc">Bir frekans veya kanal seçip yayını başlat.</div>
 
-  <div class="sec"><span>🎵 Müzik Kanalı</span><span id="tmrTxt">⏱️ Zamanlayıcı: Kapalı</span></div>
-  <div class="g3">
-    <div class="btn on" id="ch0" onclick="setCh(0)">🌙 Lofi<small>432Hz Yumuşak</small></div>
-    <div class="btn" id="ch1" onclick="setCh(1)">🔥 Phonk<small>Gece Bas</small></div>
-    <div class="btn" id="ch2" onclick="setCh(2)">🧘 Ambient<small>Uzay Akışı</small></div>
+<aside class="side">
+  <div class="brand">✦ NOVA MUSIC</div>
+  <div class="nav act" onclick="go('home',this)">🏠 Ana Sayfa</div>
+  <div class="nav" onclick="go('freq',this)">〰️ Frekans Merkezi</div>
+  <div class="nav" onclick="go('nature',this)">🌿 Doğa Sesleri</div>
+  <div class="nav" onclick="go('mood',this)">🎭 Ruh Hâli</div>
+  <div class="nav" onclick="go('ai',this)">🤖 NOVA AI</div>
+  <div class="div-line"></div>
+  <div class="nav" onclick="go('favs',this)">❤️ Favorilerim</div>
+  <div class="nav" onclick="go('stats',this)">📊 İstatistikler</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <input class="search" id="searchBox" placeholder="Müzik, frekans (432 Hz), doğa sesi veya ruh hâli ara..." oninput="handleSearch(this.value)">
+    <div class="badge" id="activeMixBadge">🎛️ Aktif Katman: Hazır</div>
   </div>
 
-  <div class="sec"><span>✨ Solfeggio & Doğal Akort (11 Frekans)</span></div>
-  <div class="g4">
-    <div class="btn" id="f_174" onclick="setFreq(174,'sol','174 Hz: Fiziksel gerginliği azaltır, derin rahatlama verir.')">174 Hz<small>Gevşeme</small></div>
-    <div class="btn" id="f_256" onclick="setFreq(256,'sol','256 Hz: Kök tonu; güven, denge ve sakinlik sağlar.')">256 Hz<small>Topraklanma</small></div>
-    <div class="btn" id="f_285" onclick="setFreq(285,'sol','285 Hz: Enerji alanını tazeler, yorgunluğu hafifletir.')">285 Hz<small>Yenilenme</small></div>
-    <div class="btn" id="f_396" onclick="setFreq(396,'sol','396 Hz: Kaygı, stres ve zihinsel yükleri hafifletir.')">396 Hz<small>Stres Atma</small></div>
-    <div class="btn" id="f_417" onclick="setFreq(417,'sol','417 Hz: Olumsuz düşünceleri temizler, zihni yeniler.')">417 Hz<small>Tazelenme</small></div>
-    <div class="btn" id="f_432" onclick="setFreq(432,'sol','432 Hz: Kalp atışıyla uyumlu doğal frekans; huzur verir.')">432 Hz<small>Doğal Uyum</small></div>
-    <div class="btn" id="f_528" onclick="setFreq(528,'sol','528 Hz: Onarım ve pozitif enerji frekansı.')">528 Hz<small>Pozitif Enerji</small></div>
-    <div class="btn" id="f_639" onclick="setFreq(639,'sol','639 Hz: Duygusal denge ve içsel uyumu destekler.')">639 Hz<small>İç Huzur</small></div>
-    <div class="btn" id="f_741" onclick="setFreq(741,'sol','741 Hz: Zihinsel bulanıklığı dağıtır, netlik sağlar.')">741 Hz<small>Zihin Temizliği</small></div>
-    <div class="btn" id="f_852" onclick="setFreq(852,'sol','852 Hz: Sezgiyi güçlendirir, derin meditasyon odağı verir.')">852 Hz<small>Farkındalık</small></div>
-    <div class="btn" id="f_963" onclick="setFreq(963,'sol','963 Hz: Zihinsel berraklık ve yüksek farkındalık.')">963 Hz<small>Berraklık</small></div>
+  <!-- CANLI ÇOKLU SES KARIŞTIRICI (HER SAYFADA ERİŞİLEBİLİR) -->
+  <div class="mixer">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+      <div>
+        <strong style="font-size:15px">🎛️ NOVA Çok Kanallı Ses Mikseri</strong>
+        <span style="font-size:12px;color:var(--muted);margin-left:8px">Müzik + Frekans + Doğa sesini aynı anda birleştir</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-prim" style="padding:7px 12px;font-size:12px" onclick="savePreset()">💾 Karışımı Kaydet</button>
+        <button class="btn-prim" style="padding:7px 12px;font-size:12px;background:#1e293b" onclick="stopAllLayers()">⏹ Tümünü Sustur</button>
+      </div>
+    </div>
+    <div class="mix-row">
+      <div class="mix-ch">
+        <div style="display:flex;justify-content:space-between;font-size:12px"><span>🎵 Müzik Kanalı</span><b id="lblMusic">Seçilmedi</b></div>
+        <input type="range" min="0" max="1" step="0.02" value="0.7" oninput="setLayerVol('music',this.value)">
+      </div>
+      <div class="mix-ch">
+        <div style="display:flex;justify-content:space-between;font-size:12px"><span>〰️ Frekans Kanalı</span><b id="lblFreq">Kapalı</b></div>
+        <input type="range" min="0" max="0.25" step="0.005" value="0.08" oninput="setLayerVol('freq',this.value)">
+      </div>
+      <div class="mix-ch">
+        <div style="display:flex;justify-content:space-between;font-size:12px"><span>🌿 Doğa Sesi Kanalı</span><b id="lblNat">Kapalı</b></div>
+        <input type="range" min="0" max="0.6" step="0.02" value="0.25" oninput="setLayerVol('nat',this.value)">
+      </div>
+    </div>
+    <div id="savedPresets" style="margin-top:8px"></div>
   </div>
 
-  <div class="sec"><span>🧠 Binaural Beyin Dalgaları (Kulaklık Önerilir)</span></div>
-  <div class="g4">
-    <div class="btn" id="b_40" onclick="setFreq(40,'bin','40 Hz Gama: Maksimum odaklanma, hafıza ve dikkat.')">Gama 40Hz<small>Odaklanma</small></div>
-    <div class="btn" id="b_10" onclick="setFreq(10,'bin','10 Hz Alfa: Stres atma ve sakin uyanıklık.')">Alfa 10Hz<small>Stres Atma</small></div>
-    <div class="btn" id="b_6" onclick="setFreq(6,'bin','6 Hz Teta: Derin meditasyon ve hayal gücü.')">Teta 6Hz<small>Meditasyon</small></div>
-    <div class="btn" id="b_2" onclick="setFreq(2,'bin','2 Hz Delta: Derin ve kesintisiz uyku frekansı.')">Delta 2Hz<small>Derin Uyku</small></div>
-  </div>
-
-  <div class="sec"><span>🌧️ Ortam Sesleri & Uyku Zamanlayıcı</span></div>
-  <div class="g3">
-    <div class="btn" id="rainBtn" onclick="togAmb('rain')">🌧️ Yağmur<small>Rahatlatıcı</small></div>
-    <div class="btn" id="fireBtn" onclick="togAmb('fire')">🔥 Şömine<small>Sıcak Ateş</small></div>
-    <div class="btn" id="slpBtn" onclick="cycleSleep()">⏱️ Uyku<small id="slpSub">Kapalı</small></div>
-  </div>
-
-  <div class="sliders">
-    <div><label>🎵 Müzik Sesi</label><input type="range" min="0" max="1" step="0.02" value="0.7" oninput="if(mGain)mGain.gain.value=this.value"></div>
-    <div><label>✨ Frekans Sesi</label><input type="range" min="0" max="0.25" step="0.005" value="0.07" oninput="fVol=parseFloat(this.value);if(fGain)fGain.gain.value=fVol"></div>
-  </div>
-
-  <button type="button" class="play" id="pbtn" onclick="togglePlay()">▶ YAYINI BAŞLAT</button>
-</div>
-
-<script>
-let ctx,mGain,fGain,playing=false,ch=0,step=0,timer,osc1=null,osc2=null,curKey="",fVol=0.07,rainNode=null,fireNode=null,sleepMin=0,sleepInt=null;
-const viz=document.getElementById("viz");
-for(let i=0;i<26;i++){let b=document.createElement("div");b.className="bar";viz.appendChild(b)}
-const bars=document.querySelectorAll(".bar");
-
-function initAudio(){
-  if(ctx)return;
-  ctx=new(window.AudioContext||window.webkitAudioContext)();
-  mGain=ctx.createGain();mGain.gain.value=0.7;mGain.connect(ctx.destination);
-  fGain=ctx.createGain();fGain.gain.value=fVol;fGain.connect(ctx.destination);
-}
-
-function setCh(n){
-  ch=n;
-  for(let i=0;i<3;i++)document.getElementById("ch"+i).className=i==n?"btn on":"btn";
-  if(playing){clearInterval(timer);timer=setInterval(playNote,ch===2?880:410)}
-}
-
-function stopFreq(){
-  if(osc1){try{osc1.stop()}catch(e){}osc1=null}
-  if(osc2){try{osc2.stop()}catch(e){}osc2=null}
-  document.querySelectorAll(".btn").forEach(x=>{if(x.id.startsWith("f_")||x.id.startsWith("b_"))x.classList.remove("on")});
-}
-
-function setFreq(hz,mode,info){
-  initAudio();
-  if(ctx.state==="suspended")ctx.resume();
-  let key=mode+"_"+hz;
-  stopFreq();
-  if(curKey===key){curKey="";document.getElementById("desc").innerText="Frekans kapatıldı.";return}
-  curKey=key;
-  document.getElementById(key).classList.add("on");
-  document.getElementById("desc").innerText=info;
-  if(mode==="sol"){
-    let o=ctx.createOscillator();o.type="sine";o.frequency.value=hz;o.connect(fGain);o.start();osc1=o;
-  }else{
-    let merger=ctx.createChannelMerger(2);
-    let oL=ctx.createOscillator(),oR=ctx.createOscillator();
-    oL.type="sine";oR.type="sine";oL.frequency.value=200;oR.frequency.value=200+hz;
-    oL.connect(merger,0,0);oR.connect(merger,0,1);merger.connect(fGain);oL.start();oR.start();osc1=oL;osc2=oR;
-  }
-}
-
-function togAmb(type){
-  initAudio();
-  if(ctx.state==="suspended")ctx.resume();
-  let btn=document.getElementById(type+"Btn");
-  if(type==="rain"&&rainNode){rainNode.stop();rainNode=null;btn.classList.remove("on");return}
-  if(type==="fire"&&fireNode){fireNode.stop();fireNode=null;btn.classList.remove("on");return}
-  btn.classList.add("on");
-  let buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),d=buf.getChannelData(0);
-  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
-  let src=ctx.createBufferSource();src.buffer=buf;src.loop=true;
-  let flt=ctx.createBiquadFilter(),g=ctx.createGain();
-  if(type==="rain"){flt.type="bandpass";flt.frequency.value=850;g.gain.value=0.14;rainNode=src}
-  else{flt.type="lowpass";flt.frequency.value=250;g.gain.value=0.26;fireNode=src}
-  src.connect(flt);flt.connect(g);g.connect(mGain);src.start();
-}
-
-function cycleSleep(){
-  if(sleepMin===0)sleepMin=15;else if(sleepMin===15)sleepMin=30;else if(sleepMin===30)sleepMin=60;else sleepMin=0;
-  clearInterval(sleepInt);
-  if(sleepMin===0){
-    document.getElementById("slpBtn").classList.remove("on");
-    document.getElementById("slpSub").innerText="Kapalı";
-    document.getElementById("tmrTxt").innerText="⏱️ Zamanlayıcı: Kapalı";
-    return;
-  }
-  document.getElementById("slpBtn").classList.add("on");
-  let rem=sleepMin*60;
-  document.getElementById("slpSub").innerText=sleepMin+" Dk";
-  sleepInt=setInterval(()=>{
-    rem--;
-    let m=Math.floor(rem/60),s=String(rem%60).padStart(2,"0");
-    document.getElementById("tmrTxt").innerText="⏱️ Kalan: "+m+":"+s;
-    if(rem<=0){clearInterval(sleepInt);if(playing)togglePlay();stopFreq()}
-  },1000);
-}
-
-function getNote(){
-  let r=Math.floor(Math.random()*6);
-  if(ch===0)return r===0?216:r===1?256.8:r===2?288.3:r===3?324:r===4?384.4:432;
+  <!-- 1. ANA SAYFA -->
+  <section class="view act" id="v-home">
+    <div class="sec-title"><span>✨ Sana Özel & Günün Müzikleri</span><span class="sec-sub">Üretken & Telifsiz NOVA Ses Motoru</span></div>
