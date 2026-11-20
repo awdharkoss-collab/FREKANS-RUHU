@@ -1,88 +1,186 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>Zindan Şövalyesi</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aura Radio Pro — 7/24 Lofi, Phonk & 15 Şifa/Beyin Frekansı</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;user-select:none}body{background:#0b110d;color:#fff;font-family:sans-serif;overflow:hidden;touch-action:none}
-canvas{display:block;width:100vw;height:100vh}
-.ov{position:fixed;inset:0;background:rgba(8,12,18,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;z-index:99;text-align:center}
-.hid{display:none!important}
-.row{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;justify-content:center}
-.hc{background:#1e293b;border:3px solid #475569;border-radius:14px;padding:14px;width:155px;cursor:pointer}
-.hc.sel{border-color:#fbbf24;box-shadow:0 0 18px rgba(251,191,36,.4)}
-.btn{background:#d97706;border:2px solid #fef08a;color:#fff;padding:14px 36px;font-size:19px;font-weight:900;border-radius:12px;cursor:pointer}
-</style></head>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
+body{background:radial-gradient(circle at top,#1e1b4b,#070a12 75%);color:#f8fafc;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:14px}
+.box{width:100%;max-width:480px;background:rgba(15,23,42,.88);border:1px solid #334155;border-radius:24px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.7);backdrop-filter:blur(14px)}
+h1{font-size:21px;text-align:center;background:linear-gradient(90deg,#38bdf8,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px}
+.sub{text-align:center;font-size:11px;color:#94a3b8;margin-bottom:12px}
+.viz{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:42px;margin-bottom:12px;background:#090d16;border-radius:12px;padding:6px;border:1px solid #1e293b}
+.bar{width:6px;height:6px;background:linear-gradient(180deg,#38bdf8,#a855f7);border-radius:4px;transition:height .12s}
+.info{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);border-radius:10px;padding:8px 10px;font-size:11px;color:#bae6fd;text-align:center;margin-bottom:10px;min-height:32px;display:flex;align-items:center;justify-content:center}
+.sec{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:1px;margin:11px 0 6px;text-transform:uppercase;display:flex;justify-content:space-between}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.btn{background:#1e293b;border:1.5px solid #334155;color:#e2e8f0;padding:8px 4px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:.15s;line-height:1.25}
+.btn small{display:block;font-size:9px;font-weight:500;color:#94a3b8;margin-top:2px}
+.btn.on{border-color:#38bdf8;background:rgba(56,189,248,.18);color:#fff;box-shadow:0 0 14px rgba(56,189,248,.25)}
+.btn.on small{color:#bae6fd}
+.sliders{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;background:#0f172a;padding:10px;border-radius:12px}
+.sliders label{font-size:10px;color:#94a3b8;display:block;margin-bottom:4px}
+input[type=range]{width:100%;accent-color:#38bdf8}
+.play{width:100%;margin-top:12px;padding:13px;border:none;border-radius:14px;font-size:15px;font-weight:800;color:#fff;background:linear-gradient(90deg,#0284c7,#7c3aed);cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,.35)}
+</style>
+</head>
 <body>
-<div id="st" class="ov">
-  <h1 style="color:#fbbf24">⚔️ ZİNDAN ŞÖVALYESİ</h1>
-  <div class="row">
-    <div class="hc sel" id="h0"><div style="font-size:34px">⚡</div><b>Yıldırım Lordu</b><p style="font-size:11px;color:#94a3b8">Çekiç & Şimşek</p></div>
-    <div class="hc" id="h1"><div style="font-size:34px">🤖</div><b>Plazma Zırhı</b><p style="font-size:11px;color:#94a3b8">Hızlı Lazer Işını</p></div>
-    <div class="hc" id="h2"><div style="font-size:34px">🗡️</div><b>Zümrüt Şövalye</b><p style="font-size:11px;color:#94a3b8">Dev Kılıç & Zırh</p></div>
+<div class="box">
+  <h1>🎧 AURA RADIO & FREKANS STÜDYOSU</h1>
+  <p class="sub">7/24 Lofi • Phonk • Solfeggio & Binaural Beyin Dalgaları</p>
+  <div class="viz" id="viz"></div>
+  <div class="info" id="desc">Bir müzik kanalı ve dilediğin frekansı seçip yayını başlat.</div>
+
+  <div class="sec"><span>🎵 Müzik Kanalı</span><span id="tmrTxt">⏱️ Zamanlayıcı: Kapalı</span></div>
+  <div class="g3">
+    <div class="btn on" id="ch0" onclick="setCh(0)">🌙 Lofi<small>432Hz Yumuşak</small></div>
+    <div class="btn" id="ch1" onclick="setCh(1)">🔥 Phonk<small>Gece Bas</small></div>
+    <div class="btn" id="ch2" onclick="setCh(2)">🧘 Ambient<small>Uzay Akışı</small></div>
   </div>
-  <button type="button" class="btn" id="go">SAVAŞA GİR</button>
+
+  <div class="sec"><span>✨ Solfeggio & Doğal Akort (11 Frekans)</span></div>
+  <div class="g4" id="solGrid"></div>
+
+  <div class="sec"><span>🧠 Binaural Beyin Dalgaları (Kulaklık Önerilir)</span></div>
+  <div class="g4" id="binGrid"></div>
+
+  <div class="sec"><span>🌧️ Ortam Sesleri & Uyku Zamanlayıcı</span></div>
+  <div class="g3">
+    <div class="btn" id="rainBtn" onclick="togAmb('rain')">🌧️ Yağmur<small>Rahatlatıcı</small></div>
+    <div class="btn" id="fireBtn" onclick="togAmb('fire')">🔥 Şömine<small>Sıcak Ateş</small></div>
+    <div class="btn" id="slpBtn" onclick="cycleSleep()">⏱️ Uyku<small id="slpSub">Kapalı</small></div>
+  </div>
+
+  <div class="sliders">
+    <div><label>🎵 Müzik Sesi</label><input type="range" min="0" max="1" step="0.02" value="0.7" oninput="if(mGain)mGain.gain.value=this.value"></div>
+    <div><label>✨ Frekans Sesi</label><input type="range" min="0" max="0.25" step="0.005" value="0.07" oninput="fVol=parseFloat(this.value);if(fGain)fGain.gain.value=fVol"></div>
+  </div>
+
+  <button class="play" id="pbtn" onclick="togglePlay()">▶ YAYINI BAŞLAT</button>
 </div>
-<div id="lu" class="ov hid"><h2 style="color:#fbbf24">✨ YETENEK SEÇ</h2><div class="row" id="cb"></div></div>
-<canvas id="c"></canvas>
+
 <script>
-const c=document.getElementById("c"),x=c.getContext("2d");let W=c.width=innerWidth,H=c.height=innerHeight;
-onresize=()=>{W=c.width=innerWidth;H=c.height=innerHeight};
-let ht=0,p,en=[],bu=[],ge=[],ft=[],k={},joy={a:0,sx:0,sy:0,dx:0,dy:0},t=0,lt=0,st=0,bt=0,kl=0,run=0,an=0;
-document.getElementById("h0").onclick=()=>{ht=0;document.getElementById("h0").className="hc sel";document.getElementById("h1").className="hc";document.getElementById("h2").className="hc"};
-document.getElementById("h1").onclick=()=>{ht=1;document.getElementById("h0").className="hc";document.getElementById("h1").className="hc sel";document.getElementById("h2").className="hc"};
-document.getElementById("h2").onclick=()=>{ht=2;document.getElementById("h0").className="hc";document.getElementById("h1").className="hc";document.getElementById("h2").className="hc sel"};
-onkeydown=e=>k[e.key.toLowerCase()]=1;onkeyup=e=>k[e.key.toLowerCase()]=0;
-c.ontouchstart=e=>{let q=e.touches.item(0);if(q)joy={a:1,sx:q.clientX,sy:q.clientY,dx:0,dy:0}};
-c.ontouchmove=e=>{let q=e.touches.item(0);if(joy.a&&q){let vx=q.clientX-joy.sx,vy=q.clientY-joy.sy,d=Math.hypot(vx,vy);if(d>0){let cl=Math.min(d,45);joy.dx=vx/d*(cl/45);joy.dy=vy/d*(cl/45)}}};
-c.ontouchend=()=>joy.a=0;
-document.getElementById("go").onclick=()=>{
-  document.getElementById("st").classList.add("hid");
-  p={x:0,y:0,hp:ht==2?140:100,mhp:ht==2?140:100,s:ht==1?250:220,l:1,xp:0,nx:8,fr:ht==1?.4:.55,ft:0,d:ht==2?34:28,m:1,au:0,dir:0};
-  en=[];bu=[];ge=[];ft=[];t=0;st=0;bt=0;kl=0;run=1;lt=performance.now();requestAnimationFrame(lp);
-};
-function lvl(){
-  run=0;const b=document.getElementById("cb");b.innerHTML="";
-  [{i:"m",t:"⚔️ +1 Silah"},{i:"s",t:"⚡ Hız +%25"},{i:"d",t:"🔥 Hasar +%35"},{i:"a",t:"🌀 Plazma Aura"},{i:"h",t:"🧪 +45 Max Can"}].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{
-    let d=document.createElement("div");d.className="hc";d.innerHTML="<b>"+u.t+"</b>";
-    d.onclick=()=>{if(u.i=="m")p.m++;if(u.i=="s")p.fr*=.75;if(u.i=="d")p.d*=1.35;if(u.i=="a")p.au++;if(u.i=="h"){p.mhp+=45;p.hp=p.mhp}
-    document.getElementById("lu").classList.add("hid");run=1;lt=performance.now();requestAnimationFrame(lp)};b.appendChild(d);
-  });document.getElementById("lu").classList.remove("hid");
+const SOLFEGGIO=[
+  {hz:174,name:"Gevşeme",info:"174 Hz: Fiziksel gerginliği azaltır, derin bedensel rahatlama verir."},
+  {hz:256,name:"Topraklanma",info:"256 Hz: Kök tonu (C4); güven, denge ve sakinlik hissi sağlar."},
+  {hz:285,name:"Yenilenme",info:"285 Hz: Enerji alanını tazeler, zihinsel yorgunluğu hafifletir."},
+  {hz:396,name:"Stres Atma",info:"396 Hz: Kaygı, stres ve zihinsel yüklerden arınmaya yardımcı olur."},
+  {hz:417,name:"Tazelenme",info:"417 Hz: Olumsuz düşünceleri temizler, zihni yeniler."},
+  {hz:432,name:"Doğal Uyum",info:"432 Hz: Kalp atışıyla uyumlu doğal frekans; derin huzur verir."},
+  {hz:528,name:"Pozitif Enerji",info:"528 Hz: Onarım ve sevgi frekansı; dinginlik ve mutluluk hissi verir."},
+  {hz:639,name:"İç Huzur",info:"639 Hz: Duygusal denge, empati ve içsel uyumu destekler."},
+  {hz:741,name:"Zihin Temizliği",info:"741 Hz: Zihinsel bulanıklığı dağıtır, net düşünmeyi sağlar."},
+  {hz:852,name:"Farkındalık",info:"852 Hz: Sezgiyi güçlendirir, derin meditasyon odağı sağlar."},
+  {hz:963,name:"Berraklık",info:"963 Hz: Zihinsel berraklık ve yüksek farkındalık tonu."}
+];
+
+const BINAURAL=[
+  {hz:40,name:"Gama (40Hz)",info:"40 Hz Gama (Kulaklık): Maksimum odaklanma, hafıza ve dikkat."},
+  {hz:10,name:"Alfa (10Hz)",info:"10 Hz Alfa (Kulaklık): Stres atma, sakin uyanıklık ve akış hali."},
+  {hz:6,name:"Teta (6Hz)",info:"6 Hz Teta (Kulaklık): Derin meditasyon, hayal gücü ve gevşeme."},
+  {hz:2,name:"Delta (2Hz)",info:"2 Hz Delta (Kulaklık): Derin ve kesintisiz uyku frekansı."}
+];
+
+const sg=document.getElementById("solGrid");
+SOLFEGGIO.forEach(s=>{
+  sg.innerHTML+=`<div class="btn" id="f_${s.hz}" onclick="setFreq(${s.hz},'sol','${s.info}')">${s.hz} Hz<small>${s.name}</small></div>`;
+});
+const bg=document.getElementById("binGrid");
+BINAURAL.forEach(b=>{
+  bg.innerHTML+=`<div class="btn" id="b_${b.hz}" onclick="setFreq(${b.hz},'bin','${b.info}')">${b.name}<small>Binaural</small></div>`;
+});
+
+let ctx,mGain,fGain,playing=false,ch=0,step=0,timer,osc1=null,osc2=null,curKey="",fVol=0.07,amb={},sleepMin=0,sleepInt=null;
+const viz=document.getElementById("viz");
+for(let i=0;i<28;i++){let b=document.createElement("div");b.className="bar";viz.appendChild(b)}
+const bars=document.querySelectorAll(".bar");
+
+function initAudio(){
+  if(ctx)return;
+  ctx=new(window.AudioContext||window.webkitAudioContext)();
+  mGain=ctx.createGain();mGain.gain.value=0.7;mGain.connect(ctx.destination);
+  fGain=ctx.createGain();fGain.gain.value=fVol;fGain.connect(ctx.destination);
 }
-function lp(n){
-  if(!run)return;let dt=Math.min(.05,(n-lt)/1e3);lt=n;t+=dt;an+=dt*9;
-  let mx=joy.a?joy.dx:(k.d||k.arrowright?1:0)-(k.a||k.arrowleft?1:0),my=joy.a?joy.dy:(k.s||k.arrowdown?1:0)-(k.w||k.arrowup?1:0),ln=Math.hypot(mx,my);
-  if(ln){p.x+=mx/Math.max(1,ln)*p.s*dt;p.y+=my/Math.max(1,ln)*p.s*dt;p.dir=Math.atan2(my,mx)}
-  if((st-=dt)<=0){let a=Math.random()*6.28,d=Math.max(W,H)*.6;en.push({x:p.x+Math.cos(a)*d,y:p.y+Math.sin(a)*d,r:16,hp:35+t*.7,mhp:35+t*.7,sp:95,b:0,fl:0});st=Math.max(.22,.95-t*.01)}
-  if((bt+=dt)>=30){bt=0;let a=Math.random()*6.28,d=Math.max(W,H)*.6;en.push({x:p.x+Math.cos(a)*d,y:p.y+Math.sin(a)*d,r:36,hp:550+t*6,mhp:550+t*6,sp:65,b:1,fl:0});ft.push({x:p.x,y:p.y-50,tx:"⚠️ RÜNLÜ GOLEM BOSS!",c:"#38bdf8",l:1.5})}
-  if((p.ft-=dt)<=0&&en.length){
-    let nr=en.reduce((a,b)=>Math.hypot(b.x-p.x,b.y-p.y)<Math.hypot(a.x-p.x,a.y-p.y)?b:a);
-    if(Math.hypot(nr.x-p.x,nr.y-p.y)<540){
-      let ba=Math.atan2(nr.y-p.y,nr.x-p.x);p.dir=ba;
-      for(let i=0;i<p.m;i++){let a=ba+(i-(p.m-1)/2)*.18;bu.push({x:p.x,y:p.y,vx:Math.cos(a)*580,vy:Math.sin(a)*580,a:a,rot:0,l:1})}
-      if(ht==0&&Math.random()<.45){nr.hp-=p.d*1.4;nr.fl=.12;ft.push({x:nr.x,y:nr.y-24,tx:"⚡"+Math.round(p.d*1.4),c:"#38bdf8",l:.7})}
-      p.ft=p.fr;
-    }
-  }
-  bu.forEach((b,i)=>{b.x+=b.vx*dt;b.y+=b.vy*dt;b.rot+=dt*20;b.l-=dt;en.forEach(e=>{if(Math.hypot(b.x-e.x,b.y-e.y)<e.r+10){e.hp-=p.d;e.fl=.1;b.l=0;ft.push({x:e.x,y:e.y-15,tx:Math.round(p.d),c:ht==0?"#38bdf8":ht==1?"#f87171":"#4ade80",l:.6})}});if(b.l<=0)bu.splice(i,1)});
-  for(let i=en.length-1;i>=0;i--){
-    let e=en[i];if(e.fl>0)e.fl-=dt;let a=Math.atan2(p.y-e.y,p.x-e.x);e.x+=Math.cos(a)*e.sp*dt;e.y+=Math.sin(a)*e.sp*dt;
-    if(p.au>0&&Math.hypot(p.x-e.x,p.y-e.y)<75+p.au*22)e.hp-=p.d*p.au*dt*1.2;
-    if(Math.hypot(p.x-e.x,p.y-e.y)<18+e.r){p.hp-=(e.b?28:14)*dt;if(p.hp<=0){alert("SAVAŞ BİTTİ! Skor: "+kl);location.reload();return}}
-    if(e.hp<=0){kl++;ge.push({x:e.x,y:e.y,v:e.b?25:2,b:e.b});en.splice(i,1)}
-  }
-  for(let i=ge.length-1;i>=0;i--){let g=ge[i],d=Math.hypot(p.x-g.x,p.y-g.y);if(d<150){let a=Math.atan2(p.y-g.y,p.x-g.x);g.x+=Math.cos(a)*380*dt;g.y+=Math.sin(a)*380*dt}if(d<24){p.xp+=g.v;ge.splice(i,1);if(p.xp>=p.nx){p.xp=0;p.l++;p.nx=Math.round(p.nx*1.35);lvl();return}}}
-  ft.forEach((f,i)=>{f.y-=38*dt;if((f.l-=dt)<=0)ft.splice(i,1)});
-  x.fillStyle="#141e16";x.fillRect(0,0,W,H);x.save();x.translate(W/2-p.x,H/2-p.y);
-  for(let gx=Math.floor((p.x-W/2)/80)*80;gx<p.x+W/2+80;gx+=80)for(let gy=Math.floor((p.y-H/2)/80)*80;gy<p.y+H/2+80;gy+=80){x.fillStyle=((gx+gy)/80)%2==0?"#1c2a1e":"#172219";x.fillRect(gx,gy,78,78)}
-  if(p.au>0){x.beginPath();x.arc(p.x,p.y,75+p.au*22,0,6.28);x.fillStyle="rgba(56,189,248,.12)";x.fill();x.strokeStyle="#38bdf8";x.stroke()}
-  ge.forEach(g=>{x.fillStyle=g.b?"#fbbf24":"#34d399";x.beginPath();x.arc(g.x,g.y,g.b?8:5,0,6.28);x.fill()});
-  en.forEach(e=>{x.save();x.translate(e.x,e.y);let s=e.b?2.3:1.1;x.scale(s,s);x.fillStyle=e.fl>0?"#fff":e.b?"#1e293b":"#3f6212";x.beginPath();x.arc(0,0,14,0,6.28);x.fill();x.strokeStyle=e.b?"#38bdf8":"#1a2e05";x.lineWidth=2;x.stroke();x.fillStyle=e.b?"#38bdf8":"#ef4444";x.fillRect(-6,-4,4,4);x.fillRect(2,-4,4,4);x.restore();if(e.b){x.fillStyle="#000";x.fillRect(e.x-35,e.y-45,70,7);x.fillStyle="#ef4444";x.fillRect(e.x-35,e.y-45,70*(e.hp/e.mhp),7)}});
-  bu.forEach(b=>{x.save();x.translate(b.x,b.y);if(ht==0){x.rotate(b.rot);x.fillStyle="#94a3b8";x.strokeStyle="#38bdf8";x.fillRect(-8,-6,16,12);x.strokeRect(-8,-6,16,12)}else if(ht==1){x.rotate(b.a);x.fillStyle="#ef4444";x.fillRect(-14,-3,28,6)}else{x.rotate(b.a);x.strokeStyle="#4ade80";x.lineWidth=5;x.beginPath();x.arc(0,0,14,-.8,.8);x.stroke()}x.restore()});
-  let bob=Math.sin(an)*2.5;x.save();x.translate(p.x,p.y);
-  x.fillStyle=ht==0?"#dc2626":ht==1?"#b91c1c":"#065f46";x.beginPath();x.arc(0,4+bob,15,0,6.28);x.fill();
-  x.fillStyle=ht==0?"#fde68a":ht==1?"#fbbf24":"#fed7aa";x.beginPath();x.arc(0,-10+bob,11,0,6.28);x.fill();
-  x.rotate(p.dir);x.fillStyle=ht==0?"#38bdf8":ht==1?"#ef4444":"#4ade80";x.fillRect(10,-4,22,8);x.restore();
-  x.font="900 15px sans-serif";x.textAlign="center";ft.forEach(f=>{x.fillStyle=f.c;x.fillText(f.tx,f.x,f.y)});x.restore();
-  x.fillStyle="#fff";x.font="900 15px sans-serif";x.fillText("⭐ Lv."+p.l+" | ❤️ "+Math.ceil(p.hp)+"/"+p.mhp+" | Round "+(Math.floor(t/20)+1)+" | 💀 "+kl,16,28);
-  requestAnimationFrame(lp);
+
+function setCh(n){
+  ch=n;
+  for(let i=0;i<3;i++)document.getElementById("ch"+i).className=i==n?"btn on":"btn";
+  if(playing){clearInterval(timer);timer=setInterval(playNote,ch===2?880:410)}
 }
-</script></body></html>
+
+function stopFreq(){
+  if(osc1){try{osc1.stop()}catch(e){}osc1=null}
+  if(osc2){try{osc2.stop()}catch(e){}osc2=null}
+  document.querySelectorAll("#solGrid .btn,#binGrid .btn").forEach(x=>x.classList.remove("on"));
+}
+
+function setFreq(hz,mode,info){
+  initAudio();
+  if(ctx.state==="suspended")ctx.resume();
+  let key=mode+"_"+hz;
+  stopFreq();
+  if(curKey===key){curKey="";document.getElementById("desc").innerText="Frekans kapatıldı.";return}
+  curKey=key;
+  document.getElementById((mode==="sol"?"f_":"b_")+hz).classList.add("on");
+  document.getElementById("desc").innerText=info;
+
+  if(mode==="sol"){
+    let o=ctx.createOscillator();o.type="sine";o.frequency.value=hz;
+    o.connect(fGain);o.start();osc1=o;
+  }else{
+    let merger=ctx.createChannelMerger(2);
+    let oL=ctx.createOscillator(),oR=ctx.createOscillator();
+    oL.type="sine";oR.type="sine";
+    oL.frequency.value=200;oR.frequency.value=200+hz;
+    oL.connect(merger,0,0);oR.connect(merger,0,1);
+    merger.connect(fGain);oL.start();oR.start();osc1=oL;osc2=oR;
+  }
+}
+
+function togAmb(type){
+  initAudio();
+  if(ctx.state==="suspended")ctx.resume();
+  let btn=document.getElementById(type+"Btn");
+  if(amb[type]){amb[type].stop();delete amb[type];btn.classList.remove("on");return}
+  btn.classList.add("on");
+  let buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  let src=ctx.createBufferSource();src.buffer=buf;src.loop=true;
+  let flt=ctx.createBiquadFilter(),g=ctx.createGain();
+  if(type==="rain"){flt.type="bandpass";flt.frequency.value=850;g.gain.value=0.14}
+  else{flt.type="lowpass";flt.frequency.value=250;g.gain.value=0.26}
+  src.connect(flt);flt.connect(g);g.connect(mGain);src.start();amb[type]=src;
+}
+
+function cycleSleep(){
+  const opts=[0,15,30,60];
+  sleepMin=opts[(opts.indexOf(sleepMin)+1)%opts.length];
+  clearInterval(sleepInt);
+  if(sleepMin===0){
+    document.getElementById("slpBtn").classList.remove("on");
+    document.getElementById("slpSub").innerText="Kapalı";
+    document.getElementById("tmrTxt").innerText="⏱️ Zamanlayıcı: Kapalı";
+    return;
+  }
+  document.getElementById("slpBtn").classList.add("on");
+  let rem=sleepMin*60;
+  document.getElementById("slpSub").innerText=sleepMin+" Dk";
+  sleepInt=setInterval(()=>{
+    rem--;
+    let m=Math.floor(rem/60),s=String(rem%60).padStart(2,"0");
+    document.getElementById("tmrTxt").innerText=`⏱️ Kalan: ${m}:${s}`;
+    if(rem<=0){clearInterval(sleepInt);if(playing)togglePlay();stopFreq();Object.keys(amb).forEach(togAmb)}
+  },1000);
+}
+
+const scales=[
+  [216,256.8,288.3,324,384.4,432],
+  [110,130.8,146.8,164.8,196,220],
+  [174,220,261.6,329.6,392,528]
+];
+
+function playNote(){
+  if(!playing)return;
