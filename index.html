@@ -3,28 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aura Radio Pro — 7/24 Lofi, Phonk & 15 Şifa/Beyin Frekansı</title>
+<title>Aura Radio Pro</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',sans-serif}
 body{background:radial-gradient(circle at top,#1e1b4b,#070a12 75%);color:#f8fafc;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:14px}
-.box{width:100%;max-width:480px;background:rgba(15,23,42,.88);border:1px solid #334155;border-radius:24px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.7);backdrop-filter:blur(14px)}
-h1{font-size:21px;text-align:center;background:linear-gradient(90deg,#38bdf8,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3px}
+.box{width:100%;max-width:480px;background:rgba(15,23,42,.9);border:1px solid #334155;border-radius:24px;padding:20px;box-shadow:0 24px 60px rgba(0,0,0,.7)}
+h1{font-size:21px;text-align:center;color:#38bdf8;margin-bottom:4px}
 .sub{text-align:center;font-size:11px;color:#94a3b8;margin-bottom:12px}
-.viz{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:42px;margin-bottom:12px;background:#090d16;border-radius:12px;padding:6px;border:1px solid #1e293b}
+.viz{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:40px;margin-bottom:12px;background:#090d16;border-radius:12px;padding:6px}
 .bar{width:6px;height:6px;background:linear-gradient(180deg,#38bdf8,#a855f7);border-radius:4px;transition:height .12s}
-.info{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);border-radius:10px;padding:8px 10px;font-size:11px;color:#bae6fd;text-align:center;margin-bottom:10px;min-height:32px;display:flex;align-items:center;justify-content:center}
-.sec{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:1px;margin:11px 0 6px;text-transform:uppercase;display:flex;justify-content:space-between}
+.info{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3);border-radius:10px;padding:8px;font-size:11px;color:#bae6fd;text-align:center;margin-bottom:10px;min-height:34px;display:flex;align-items:center;justify-content:center}
+.sec{font-size:10px;font-weight:800;color:#94a3b8;letter-spacing:1px;margin:10px 0 6px;text-transform:uppercase;display:flex;justify-content:space-between}
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.btn{background:#1e293b;border:1.5px solid #334155;color:#e2e8f0;padding:8px 4px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:.15s;line-height:1.25}
+.btn{background:#1e293b;border:1.5px solid #334155;color:#e2e8f0;padding:8px 4px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;text-align:center}
 .btn small{display:block;font-size:9px;font-weight:500;color:#94a3b8;margin-top:2px}
-.btn.on{border-color:#38bdf8;background:rgba(56,189,248,.18);color:#fff;box-shadow:0 0 14px rgba(56,189,248,.25)}
-.btn.on small{color:#bae6fd}
+.btn.on{border-color:#38bdf8;background:rgba(56,189,248,.2);color:#fff}
 .sliders{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;background:#0f172a;padding:10px;border-radius:12px}
 .sliders label{font-size:10px;color:#94a3b8;display:block;margin-bottom:4px}
 input[type=range]{width:100%;accent-color:#38bdf8}
-.play{width:100%;margin-top:12px;padding:13px;border:none;border-radius:14px;font-size:15px;font-weight:800;color:#fff;background:linear-gradient(90deg,#0284c7,#7c3aed);cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,.35)}
+.play{width:100%;margin-top:12px;padding:14px;border:none;border-radius:14px;font-size:16px;font-weight:800;color:#fff;background:linear-gradient(90deg,#0284c7,#7c3aed);cursor:pointer}
 </style>
 </head>
 <body>
@@ -32,7 +30,7 @@ input[type=range]{width:100%;accent-color:#38bdf8}
   <h1>🎧 AURA RADIO & FREKANS STÜDYOSU</h1>
   <p class="sub">7/24 Lofi • Phonk • Solfeggio & Binaural Beyin Dalgaları</p>
   <div class="viz" id="viz"></div>
-  <div class="info" id="desc">Bir müzik kanalı ve dilediğin frekansı seçip yayını başlat.</div>
+  <div class="info" id="desc">Bir frekans veya kanal seçip yayını başlat.</div>
 
   <div class="sec"><span>🎵 Müzik Kanalı</span><span id="tmrTxt">⏱️ Zamanlayıcı: Kapalı</span></div>
   <div class="g3">
@@ -42,10 +40,27 @@ input[type=range]{width:100%;accent-color:#38bdf8}
   </div>
 
   <div class="sec"><span>✨ Solfeggio & Doğal Akort (11 Frekans)</span></div>
-  <div class="g4" id="solGrid"></div>
+  <div class="g4">
+    <div class="btn" id="f_174" onclick="setFreq(174,'sol','174 Hz: Fiziksel gerginliği azaltır, derin rahatlama verir.')">174 Hz<small>Gevşeme</small></div>
+    <div class="btn" id="f_256" onclick="setFreq(256,'sol','256 Hz: Kök tonu; güven, denge ve sakinlik sağlar.')">256 Hz<small>Topraklanma</small></div>
+    <div class="btn" id="f_285" onclick="setFreq(285,'sol','285 Hz: Enerji alanını tazeler, yorgunluğu hafifletir.')">285 Hz<small>Yenilenme</small></div>
+    <div class="btn" id="f_396" onclick="setFreq(396,'sol','396 Hz: Kaygı, stres ve zihinsel yükleri hafifletir.')">396 Hz<small>Stres Atma</small></div>
+    <div class="btn" id="f_417" onclick="setFreq(417,'sol','417 Hz: Olumsuz düşünceleri temizler, zihni yeniler.')">417 Hz<small>Tazelenme</small></div>
+    <div class="btn" id="f_432" onclick="setFreq(432,'sol','432 Hz: Kalp atışıyla uyumlu doğal frekans; huzur verir.')">432 Hz<small>Doğal Uyum</small></div>
+    <div class="btn" id="f_528" onclick="setFreq(528,'sol','528 Hz: Onarım ve pozitif enerji frekansı.')">528 Hz<small>Pozitif Enerji</small></div>
+    <div class="btn" id="f_639" onclick="setFreq(639,'sol','639 Hz: Duygusal denge ve içsel uyumu destekler.')">639 Hz<small>İç Huzur</small></div>
+    <div class="btn" id="f_741" onclick="setFreq(741,'sol','741 Hz: Zihinsel bulanıklığı dağıtır, netlik sağlar.')">741 Hz<small>Zihin Temizliği</small></div>
+    <div class="btn" id="f_852" onclick="setFreq(852,'sol','852 Hz: Sezgiyi güçlendirir, derin meditasyon odağı verir.')">852 Hz<small>Farkındalık</small></div>
+    <div class="btn" id="f_963" onclick="setFreq(963,'sol','963 Hz: Zihinsel berraklık ve yüksek farkındalık.')">963 Hz<small>Berraklık</small></div>
+  </div>
 
   <div class="sec"><span>🧠 Binaural Beyin Dalgaları (Kulaklık Önerilir)</span></div>
-  <div class="g4" id="binGrid"></div>
+  <div class="g4">
+    <div class="btn" id="b_40" onclick="setFreq(40,'bin','40 Hz Gama: Maksimum odaklanma, hafıza ve dikkat.')">Gama 40Hz<small>Odaklanma</small></div>
+    <div class="btn" id="b_10" onclick="setFreq(10,'bin','10 Hz Alfa: Stres atma ve sakin uyanıklık.')">Alfa 10Hz<small>Stres Atma</small></div>
+    <div class="btn" id="b_6" onclick="setFreq(6,'bin','6 Hz Teta: Derin meditasyon ve hayal gücü.')">Teta 6Hz<small>Meditasyon</small></div>
+    <div class="btn" id="b_2" onclick="setFreq(2,'bin','2 Hz Delta: Derin ve kesintisiz uyku frekansı.')">Delta 2Hz<small>Derin Uyku</small></div>
+  </div>
 
   <div class="sec"><span>🌧️ Ortam Sesleri & Uyku Zamanlayıcı</span></div>
   <div class="g3">
@@ -59,43 +74,13 @@ input[type=range]{width:100%;accent-color:#38bdf8}
     <div><label>✨ Frekans Sesi</label><input type="range" min="0" max="0.25" step="0.005" value="0.07" oninput="fVol=parseFloat(this.value);if(fGain)fGain.gain.value=fVol"></div>
   </div>
 
-  <button class="play" id="pbtn" onclick="togglePlay()">▶ YAYINI BAŞLAT</button>
+  <button type="button" class="play" id="pbtn" onclick="togglePlay()">▶ YAYINI BAŞLAT</button>
 </div>
 
 <script>
-const SOLFEGGIO=[
-  {hz:174,name:"Gevşeme",info:"174 Hz: Fiziksel gerginliği azaltır, derin bedensel rahatlama verir."},
-  {hz:256,name:"Topraklanma",info:"256 Hz: Kök tonu (C4); güven, denge ve sakinlik hissi sağlar."},
-  {hz:285,name:"Yenilenme",info:"285 Hz: Enerji alanını tazeler, zihinsel yorgunluğu hafifletir."},
-  {hz:396,name:"Stres Atma",info:"396 Hz: Kaygı, stres ve zihinsel yüklerden arınmaya yardımcı olur."},
-  {hz:417,name:"Tazelenme",info:"417 Hz: Olumsuz düşünceleri temizler, zihni yeniler."},
-  {hz:432,name:"Doğal Uyum",info:"432 Hz: Kalp atışıyla uyumlu doğal frekans; derin huzur verir."},
-  {hz:528,name:"Pozitif Enerji",info:"528 Hz: Onarım ve sevgi frekansı; dinginlik ve mutluluk hissi verir."},
-  {hz:639,name:"İç Huzur",info:"639 Hz: Duygusal denge, empati ve içsel uyumu destekler."},
-  {hz:741,name:"Zihin Temizliği",info:"741 Hz: Zihinsel bulanıklığı dağıtır, net düşünmeyi sağlar."},
-  {hz:852,name:"Farkındalık",info:"852 Hz: Sezgiyi güçlendirir, derin meditasyon odağı sağlar."},
-  {hz:963,name:"Berraklık",info:"963 Hz: Zihinsel berraklık ve yüksek farkındalık tonu."}
-];
-
-const BINAURAL=[
-  {hz:40,name:"Gama (40Hz)",info:"40 Hz Gama (Kulaklık): Maksimum odaklanma, hafıza ve dikkat."},
-  {hz:10,name:"Alfa (10Hz)",info:"10 Hz Alfa (Kulaklık): Stres atma, sakin uyanıklık ve akış hali."},
-  {hz:6,name:"Teta (6Hz)",info:"6 Hz Teta (Kulaklık): Derin meditasyon, hayal gücü ve gevşeme."},
-  {hz:2,name:"Delta (2Hz)",info:"2 Hz Delta (Kulaklık): Derin ve kesintisiz uyku frekansı."}
-];
-
-const sg=document.getElementById("solGrid");
-SOLFEGGIO.forEach(s=>{
-  sg.innerHTML+=`<div class="btn" id="f_${s.hz}" onclick="setFreq(${s.hz},'sol','${s.info}')">${s.hz} Hz<small>${s.name}</small></div>`;
-});
-const bg=document.getElementById("binGrid");
-BINAURAL.forEach(b=>{
-  bg.innerHTML+=`<div class="btn" id="b_${b.hz}" onclick="setFreq(${b.hz},'bin','${b.info}')">${b.name}<small>Binaural</small></div>`;
-});
-
-let ctx,mGain,fGain,playing=false,ch=0,step=0,timer,osc1=null,osc2=null,curKey="",fVol=0.07,amb={},sleepMin=0,sleepInt=null;
+let ctx,mGain,fGain,playing=false,ch=0,step=0,timer,osc1=null,osc2=null,curKey="",fVol=0.07,rainNode=null,fireNode=null,sleepMin=0,sleepInt=null;
 const viz=document.getElementById("viz");
-for(let i=0;i<28;i++){let b=document.createElement("div");b.className="bar";viz.appendChild(b)}
+for(let i=0;i<26;i++){let b=document.createElement("div");b.className="bar";viz.appendChild(b)}
 const bars=document.querySelectorAll(".bar");
 
 function initAudio(){
@@ -114,7 +99,7 @@ function setCh(n){
 function stopFreq(){
   if(osc1){try{osc1.stop()}catch(e){}osc1=null}
   if(osc2){try{osc2.stop()}catch(e){}osc2=null}
-  document.querySelectorAll("#solGrid .btn,#binGrid .btn").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".btn").forEach(x=>{if(x.id.startsWith("f_")||x.id.startsWith("b_"))x.classList.remove("on")});
 }
 
 function setFreq(hz,mode,info){
@@ -124,19 +109,15 @@ function setFreq(hz,mode,info){
   stopFreq();
   if(curKey===key){curKey="";document.getElementById("desc").innerText="Frekans kapatıldı.";return}
   curKey=key;
-  document.getElementById((mode==="sol"?"f_":"b_")+hz).classList.add("on");
+  document.getElementById(key).classList.add("on");
   document.getElementById("desc").innerText=info;
-
   if(mode==="sol"){
-    let o=ctx.createOscillator();o.type="sine";o.frequency.value=hz;
-    o.connect(fGain);o.start();osc1=o;
+    let o=ctx.createOscillator();o.type="sine";o.frequency.value=hz;o.connect(fGain);o.start();osc1=o;
   }else{
     let merger=ctx.createChannelMerger(2);
     let oL=ctx.createOscillator(),oR=ctx.createOscillator();
-    oL.type="sine";oR.type="sine";
-    oL.frequency.value=200;oR.frequency.value=200+hz;
-    oL.connect(merger,0,0);oR.connect(merger,0,1);
-    merger.connect(fGain);oL.start();oR.start();osc1=oL;osc2=oR;
+    oL.type="sine";oR.type="sine";oL.frequency.value=200;oR.frequency.value=200+hz;
+    oL.connect(merger,0,0);oR.connect(merger,0,1);merger.connect(fGain);oL.start();oR.start();osc1=oL;osc2=oR;
   }
 }
 
@@ -144,20 +125,20 @@ function togAmb(type){
   initAudio();
   if(ctx.state==="suspended")ctx.resume();
   let btn=document.getElementById(type+"Btn");
-  if(amb[type]){amb[type].stop();delete amb[type];btn.classList.remove("on");return}
+  if(type==="rain"&&rainNode){rainNode.stop();rainNode=null;btn.classList.remove("on");return}
+  if(type==="fire"&&fireNode){fireNode.stop();fireNode=null;btn.classList.remove("on");return}
   btn.classList.add("on");
   let buf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),d=buf.getChannelData(0);
   for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
   let src=ctx.createBufferSource();src.buffer=buf;src.loop=true;
   let flt=ctx.createBiquadFilter(),g=ctx.createGain();
-  if(type==="rain"){flt.type="bandpass";flt.frequency.value=850;g.gain.value=0.14}
-  else{flt.type="lowpass";flt.frequency.value=250;g.gain.value=0.26}
-  src.connect(flt);flt.connect(g);g.connect(mGain);src.start();amb[type]=src;
+  if(type==="rain"){flt.type="bandpass";flt.frequency.value=850;g.gain.value=0.14;rainNode=src}
+  else{flt.type="lowpass";flt.frequency.value=250;g.gain.value=0.26;fireNode=src}
+  src.connect(flt);flt.connect(g);g.connect(mGain);src.start();
 }
 
 function cycleSleep(){
-  const opts=[0,15,30,60];
-  sleepMin=opts[(opts.indexOf(sleepMin)+1)%opts.length];
+  if(sleepMin===0)sleepMin=15;else if(sleepMin===15)sleepMin=30;else if(sleepMin===30)sleepMin=60;else sleepMin=0;
   clearInterval(sleepInt);
   if(sleepMin===0){
     document.getElementById("slpBtn").classList.remove("on");
@@ -171,16 +152,11 @@ function cycleSleep(){
   sleepInt=setInterval(()=>{
     rem--;
     let m=Math.floor(rem/60),s=String(rem%60).padStart(2,"0");
-    document.getElementById("tmrTxt").innerText=`⏱️ Kalan: ${m}:${s}`;
-    if(rem<=0){clearInterval(sleepInt);if(playing)togglePlay();stopFreq();Object.keys(amb).forEach(togAmb)}
+    document.getElementById("tmrTxt").innerText="⏱️ Kalan: "+m+":"+s;
+    if(rem<=0){clearInterval(sleepInt);if(playing)togglePlay();stopFreq()}
   },1000);
 }
 
-const scales=[
-  [216,256.8,288.3,324,384.4,432],
-  [110,130.8,146.8,164.8,196,220],
-  [174,220,261.6,329.6,392,528]
-];
-
-function playNote(){
-  if(!playing)return;
+function getNote(){
+  let r=Math.floor(Math.random()*6);
+  if(ch===0)return r===0?216:r===1?256.8:r===2?288.3:r===3?324:r===4?384.4:432;
