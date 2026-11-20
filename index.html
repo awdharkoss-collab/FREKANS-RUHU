@@ -1,174 +1,1392 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NOVA MUSIC</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
-body{background:#060811;color:#fff;padding:20px 20px 100px}
-.ok{background:#065f46;border:2px solid #10b981;color:#ecfdf5;padding:12px;border-radius:12px;margin-bottom:16px;font-weight:700;text-align:center}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.tab{background:#1e293b;color:#cbd5e1;border:1px solid #334155;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700}
-.tab.act{background:#6d28d9;color:#fff;border-color:#38bdf8}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin:12px 0 24px}
-.card{background:#131a30;border:2px solid #1e293b;border-radius:14px;padding:16px;cursor:pointer}
-.card.act{border-color:#38bdf8;background:#1e294b}
-.panel{display:none}
-.panel.act{display:block}
-.bar{position:fixed;bottom:0;left:0;right:0;background:#0f172a;border-top:2px solid #38bdf8;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
-button.play{background:#0284c7;color:#fff;border:none;padding:12px 22px;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer}
-</style>
-</head>
-<body>
+"use client";
 
-<div class="ok" id="durum">⏳ Sayfa yükleniyor...</div>
+import { useRef, useState } from "react";
+import {
+  Play,
+  Pause,
+  Search,
+  Heart,
+  Home,
+  Compass,
+  Library,
+  Radio,
+  SkipBack,
+  SkipForward,
+  Volume2,
+  Music2,
+  Headphones,
+  Waves,
+  Moon,
+  Sparkles,
+  Clock3,
+  Plus,
+  ChevronRight,
+  Shuffle,
+  Repeat,
+  ListMusic,
+} from "lucide-react";
 
-<div class="tabs">
-  <button type="button" class="tab act" id="t-muzik" onclick="sekme('muzik')">🎵 Müzikler</button>
-  <button type="button" class="tab" id="t-frekans" onclick="sekme('frekans')">〰️ Frekanslar</button>
-  <button type="button" class="tab" id="t-doga" onclick="sekme('doga')">🌿 Doğa Sesleri</button>
-</div>
+const categories = [
+  { name: "Keşfet", icon: Compass },
+  { name: "Müzikler", icon: Music2 },
+  { name: "Frekanslar", icon: Radio },
+  { name: "Doğa Sesleri", icon: Waves },
+  { name: "Favorilerim", icon: Heart },
+  { name: "Kütüphanem", icon: Library },
+];
 
-<div class="panel act" id="p-muzik">
-  <h3>Müzik Kanalı Seç</h3>
-  <div class="grid">
-    <div class="card" onclick="muzikCal('Lofi 432 Hz','triangle',420,216,this)">🌙 <b>Lofi 432 Hz</b><br><small>Odak & Rahatlama</small></div>
-    <div class="card" onclick="muzikCal('Gece Piyano','sine',650,261.6,this)">🎹 <b>Gece Piyano</b><br><small>Sakin & Uyku</small></div>
-    <div class="card" onclick="muzikCal('Cyber Phonk','sawtooth',320,110,this)">🔥 <b>Cyber Phonk</b><br><small>Yüksek Enerji</small></div>
-    <div class="card" onclick="muzikCal('Derin Uzay','sine',900,174,this)">🌌 <b>Derin Uzay</b><br><small>Meditasyon</small></div>
-  </div>
-</div>
+const moods = [
+  {
+    title: "Rahatla",
+    subtitle: "Zihnini dinlendir",
+    image:
+      "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=900",
+    color: "#8b9d85",
+  },
+  {
+    title: "Odaklan",
+    subtitle: "Konsantrasyon zamanı",
+    image:
+      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=900",
+    color: "#647d91",
+  },
+  {
+    title: "Uyku",
+    subtitle: "Huzurlu bir gece",
+    image:
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=900",
+    color: "#555477",
+  },
+  {
+    title: "Enerji",
+    subtitle: "Güne güçlü başla",
+    image:
+      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=900",
+    color: "#bd9569",
+  },
+];
 
-<div class="panel" id="p-frekans">
-  <h3>Şifa Frekansı Ekle (Müziğin Üzerine Çalar)</h3>
-  <div class="grid">
-    <div class="card" onclick="frekansCal(174,this)"><b>174 Hz</b><br><small>Gevşeme</small></div>
-    <div class="card" onclick="frekansCal(285,this)"><b>285 Hz</b><br><small>Yenilenme</small></div>
-    <div class="card" onclick="frekansCal(396,this)"><b>396 Hz</b><br><small>Stres Atma</small></div>
-    <div class="card" onclick="frekansCal(417,this)"><b>417 Hz</b><br><small>Tazelenme</small></div>
-    <div class="card" onclick="frekansCal(432,this)"><b>432 Hz</b><br><small>Doğal Uyum</small></div>
-    <div class="card" onclick="frekansCal(528,this)"><b>528 Hz</b><br><small>Pozitif Enerji</small></div>
-    <div class="card" onclick="frekansCal(639,this)"><b>639 Hz</b><br><small>İç Huzur</small></div>
-    <div class="card" onclick="frekansCal(741,this)"><b>741 Hz</b><br><small>Zihin Temizliği</small></div>
-    <div class="card" onclick="frekansCal(852,this)"><b>852 Hz</b><br><small>Farkındalık</small></div>
-    <div class="card" onclick="frekansCal(963,this)"><b>963 Hz</b><br><small>Berraklık</small></div>
-  </div>
-</div>
+const albums = [
+  {
+    title: "Deep Focus",
+    artist: "NOVA Selection",
+    image:
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=700",
+    duration: "2 saat 15 dk",
+  },
+  {
+    title: "Ocean Dreams",
+    artist: "Nature Sounds",
+    image:
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700",
+    duration: "1 saat 40 dk",
+  },
+  {
+    title: "Night Atmosphere",
+    artist: "NOVA Ambient",
+    image:
+      "https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=700",
+    duration: "3 saat",
+  },
+  {
+    title: "Forest Therapy",
+    artist: "Nature Sounds",
+    image:
+      "https://images.unsplash.com/photo-1448375240586-882707db888b?w=700",
+    duration: "55 dakika",
+  },
+  {
+    title: "Golden Morning",
+    artist: "NOVA Selection",
+    image:
+      "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=700",
+    duration: "1 saat 20 dk",
+  },
+];
 
-<div class="panel" id="p-doga">
-  <h3>Doğa Sesi Katmanı</h3>
-  <div class="grid">
-    <div class="card" onclick="dogaCal('Yağmur','bandpass',850,this)">🌧️ <b>Yağmur</b></div>
-    <div class="card" onclick="dogaCal('Okyanus','lowpass',320,this)">🌊 <b>Okyanus</b></div>
-    <div class="card" onclick="dogaCal('Şömine','lowpass',240,this)">🔥 <b>Şömine</b></div>
-    <div class="card" onclick="dogaCal('Orman','bandpass',1200,this)">🌲 <b>Orman</b></div>
-  </div>
-</div>
+const frequencies = [
+  { hz: 174, title: "Derin Rahatlama", description: "Sakin bir atmosfer" },
+  { hz: 285, title: "Denge", description: "Yumuşak tonlar" },
+  { hz: 396, title: "Meditasyon", description: "Meditatif ses deneyimi" },
+  { hz: 432, title: "Ambient", description: "Dingin müzik atmosferi" },
+  { hz: 528, title: "Pozitif Atmosfer", description: "Yumuşak ses deneyimi" },
+  { hz: 639, title: "Uyum", description: "Sakin arka plan sesi" },
+  { hz: 741, title: "Odak", description: "Dikkat dağıtmayan tonlar" },
+  { hz: 963, title: "Derin Dinleme", description: "Saf ton deneyimi" },
+];
 
-<div class="bar">
-  <div>
-    <div id="bilgi" style="font-weight:700">Hazır</div>
-    <small id="katman" style="color:#94a3b8">Müzik + Frekans + Doğa seçebilirsin</small>
-  </div>
-  <button type="button" class="play" onclick="hepsiniDurdur()">⏹ DURDUR</button>
-</div>
+const tracks = [
+  {
+    title: "Weightless",
+    artist: "Ambient Collection",
+    image:
+      "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=200",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+  },
+  {
+    title: "Ocean Waves",
+    artist: "Nature Collection",
+    image:
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+  },
+  {
+    title: "Midnight",
+    artist: "NOVA Ambient",
+    image:
+      "https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=200",
+    src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+  },
+];
 
-<script>
-var sesCtx = null;
-var mZaman = null;
-var fOsc = null;
-var dKaynak = null;
+export default function HomePage() {
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [activeCategory, setActiveCategory] = useState("Keşfet");
+  const [currentTrack, setCurrentTrack] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(70);
+  const [progress, setProgress] = useState(0);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
+  const [activeFrequency, setActiveFrequency] = useState<number | null>(null);
+  const [frequencyPlaying, setFrequencyPlaying] = useState(false);
+  const [frequencyVolume, setFrequencyVolume] = useState(0.12);
+  const [oscillator, setOscillator] = useState<OscillatorNode | null>(null);
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
-function sesBaslat() {
-  if (!sesCtx) {
-    var AC = window.AudioContext || window.webkitAudioContext;
-    sesCtx = new AC();
-  }
-  if (sesCtx.state === "suspended") {
-    sesCtx.resume();
-  }
+  const track = tracks[currentTrack];
+
+  const playTrack = async (index = currentTrack) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (index !== currentTrack) {
+      setCurrentTrack(index);
+      setIsPlaying(true);
+      setTimeout(() => {
+        audio.play().catch(() => setIsPlaying(false));
+      }, 100);
+      return;
+    }
+
+    if (audio.paused) {
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch {
+        setIsPlaying(false);
+      }
+    } else {
+      audio.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const nextTrack = () => {
+    const next = (currentTrack + 1) % tracks.length;
+    setCurrentTrack(next);
+    setIsPlaying(true);
+    setTimeout(() => audioRef.current?.play(), 100);
+  };
+
+  const previousTrack = () => {
+    const previous = (currentTrack - 1 + tracks.length) % tracks.length;
+    setCurrentTrack(previous);
+    setIsPlaying(true);
+    setTimeout(() => audioRef.current?.play(), 100);
+  };
+
+  const toggleFavorite = (title: string) => {
+    setFavorites((old) =>
+      old.includes(title)
+        ? old.filter((item) => item !== title)
+        : [...old, title]
+    );
+  };
+
+  const startFrequency = async (hz: number) => {
+    if (frequencyPlaying && activeFrequency === hz) {
+      oscillator?.stop();
+      setOscillator(null);
+      setFrequencyPlaying(false);
+      setActiveFrequency(null);
+      return;
+    }
+
+    oscillator?.stop();
+
+    const context = audioContext || new AudioContext();
+    if (context.state === "suspended") await context.resume();
+
+    const newOscillator = context.createOscillator();
+    const gain = context.createGain();
+
+    newOscillator.type = "sine";
+    newOscillator.frequency.value = hz;
+    gain.gain.value = frequencyVolume;
+
+    newOscillator.connect(gain);
+    gain.connect(context.destination);
+    newOscillator.start();
+
+    setAudioContext(context);
+    setOscillator(newOscillator);
+    setActiveFrequency(hz);
+    setFrequencyPlaying(true);
+  };
+
+  const scrollCarousel = (direction: number) => {
+    carouselRef.current?.scrollBy({
+      left: direction * 350,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <main className="nova-app">
+      <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap");
+
+        * {
+          box-sizing: border-box;
+        }
+
+        body {
+          margin: 0;
+          background: #090b10;
+          color: #f5f5f7;
+          font-family: "DM Sans", sans-serif;
+        }
+
+        button {
+          font: inherit;
+        }
+
+        .nova-app {
+          min-height: 100vh;
+          background:
+            radial-gradient(ellipse at 75% 0%, #20243a 0%, transparent 35%),
+            #090b10;
+          padding-bottom: 120px;
+        }
+
+        .sidebar {
+          width: 245px;
+          position: fixed;
+          inset: 0 auto 0 0;
+          background: rgba(13, 15, 23, 0.95);
+          border-right: 1px solid #252735;
+          padding: 30px 20px;
+          z-index: 10;
+        }
+
+        .logo {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin: 5px 8px 48px;
+          font-family: Outfit, sans-serif;
+          font-size: 25px;
+          font-weight: 800;
+          letter-spacing: 2px;
+        }
+
+        .logo-icon {
+          width: 39px;
+          height: 39px;
+          display: grid;
+          place-items: center;
+          color: #fff;
+          border-radius: 13px;
+          background: linear-gradient(135deg, #a78bfa, #5b7cfa);
+          box-shadow: 0 5px 25px #8271fa44;
+        }
+
+        .nav-label {
+          color: #777b8c;
+          font-size: 11px;
+          letter-spacing: 2px;
+          font-weight: 700;
+          margin: 0 12px 15px;
+          text-transform: uppercase;
+        }
+
+        .nav-item {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          gap: 13px;
+          border: 0;
+          padding: 13px 14px;
+          margin: 4px 0;
+          color: #9295a5;
+          background: transparent;
+          border-radius: 12px;
+          cursor: pointer;
+          text-align: left;
+          transition: 0.2s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+          color: white;
+          background: #25263a;
+        }
+
+        .nav-item.active {
+          box-shadow: inset 3px 0 #a78bfa;
+        }
+
+        .main-content {
+          margin-left: 245px;
+          padding: 27px 42px 50px;
+          max-width: 1800px;
+        }
+
+        .topbar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 20px;
+          margin-bottom: 35px;
+        }
+
+        .search-box {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          background: #171923;
+          border: 1px solid #2b2d3a;
+          border-radius: 13px;
+          padding: 13px 17px;
+          width: min(430px, 100%);
+          color: #9295a5;
+        }
+
+        .search-box input {
+          border: 0;
+          outline: 0;
+          background: transparent;
+          color: white;
+          width: 100%;
+          font-size: 14px;
+        }
+
+        .profile {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          color: #ddd;
+          font-size: 13px;
+        }
+
+        .profile-avatar {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #a78bfa, #536df7);
+          display: grid;
+          place-items: center;
+          font-weight: 800;
+        }
+
+        .hero {
+          position: relative;
+          min-height: 320px;
+          overflow: hidden;
+          border-radius: 23px;
+          padding: 48px;
+          display: flex;
+          align-items: center;
+          background:
+            linear-gradient(90deg, #101321 0%, #17182bdf 48%, #17182b22 100%),
+            url("https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1800")
+              center 45% / cover;
+          border: 1px solid #37364b;
+          margin-bottom: 42px;
+        }
+
+        .hero-content {
+          position: relative;
+          z-index: 1;
+          max-width: 520px;
+        }
+
+        .eyebrow {
+          color: #b8a9ff;
+          font-size: 12px;
+          letter-spacing: 3px;
+          font-weight: 800;
+          margin-bottom: 15px;
+        }
+
+        .hero h1 {
+          font-family: Outfit, sans-serif;
+          font-size: clamp(35px, 4vw, 55px);
+          line-height: 1.08;
+          margin: 0 0 15px;
+          letter-spacing: -1.5px;
+        }
+
+        .hero p {
+          color: #c1c1d0;
+          font-size: 15px;
+          line-height: 1.7;
+          margin: 0 0 25px;
+        }
+
+        .primary-button {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          border: 0;
+          border-radius: 12px;
+          padding: 13px 21px;
+          color: white;
+          font-weight: 700;
+          background: linear-gradient(120deg, #9175f6, #617cf6);
+          cursor: pointer;
+          box-shadow: 0 8px 25px #7569e544;
+        }
+
+        .section {
+          margin: 0 0 43px;
+        }
+
+        .section-heading {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 19px;
+          gap: 15px;
+        }
+
+        .section-heading h2 {
+          font-family: Outfit, sans-serif;
+          font-size: 22px;
+          margin: 0;
+          letter-spacing: -0.3px;
+        }
+
+        .section-heading span {
+          color: #999bad;
+          font-size: 13px;
+        }
+
+        .carousel-controls {
+          display: flex;
+          gap: 8px;
+        }
+
+        .carousel-controls button {
+          width: 35px;
+          height: 35px;
+          border-radius: 50%;
+          border: 1px solid #333545;
+          background: #191b27;
+          color: white;
+          cursor: pointer;
+          display: grid;
+          place-items: center;
+        }
+
+        .mood-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 15px;
+        }
+
+        .mood-card {
+          height: 180px;
+          border-radius: 17px;
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+          border: 1px solid #ffffff15;
+          transition: transform 0.25s;
+        }
+
+        .mood-card:hover,
+        .album-card:hover {
+          transform: translateY(-5px);
+        }
+
+        .mood-card img,
+        .album-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.4s;
+        }
+
+        .mood-card:hover img,
+        .album-card:hover img {
+          transform: scale(1.07);
+        }
+
+        .mood-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(0deg, #080a12ed, #080a1230 80%);
+          display: flex;
+          flex-direction: column;
+          justify-content: end;
+          padding: 18px;
+        }
+
+        .mood-overlay h3 {
+          margin: 0 0 5px;
+          font-family: Outfit, sans-serif;
+          font-size: 20px;
+        }
+
+        .mood-overlay p {
+          margin: 0;
+          font-size: 12px;
+          color: #d1d1dc;
+        }
+
+        .album-carousel {
+          display: flex;
+          gap: 17px;
+          overflow-x: auto;
+          scroll-behavior: smooth;
+          scrollbar-width: none;
+          padding: 3px 2px 13px;
+        }
+
+        .album-carousel::-webkit-scrollbar {
+          display: none;
+        }
+
+        .album-card {
+          min-width: 190px;
+          width: 190px;
+          cursor: pointer;
+          transition: transform 0.25s;
+        }
+
+        .album-image {
+          width: 190px;
+          height: 190px;
+          border-radius: 15px;
+          overflow: hidden;
+          position: relative;
+          background: #1a1c2b;
+        }
+
+        .album-play {
+          position: absolute;
+          right: 12px;
+          bottom: 12px;
+          width: 42px;
+          height: 42px;
+          display: grid;
+          place-items: center;
+          border: 0;
+          border-radius: 50%;
+          color: white;
+          background: #967af6;
+          opacity: 0;
+          transform: translateY(8px);
+          transition: 0.2s;
+          cursor: pointer;
+        }
+
+        .album-card:hover .album-play {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .album-card h3 {
+          font-size: 14px;
+          margin: 12px 0 5px;
+        }
+
+        .album-card p {
+          font-size: 12px;
+          color: #9295a5;
+          margin: 0;
+        }
+
+        .frequency-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 13px;
+        }
+
+        .frequency-card {
+          padding: 19px;
+          border: 1px solid #303244;
+          background: linear-gradient(145deg, #1c2031, #131520);
+          border-radius: 16px;
+          cursor: pointer;
+          text-align: left;
+          color: white;
+          transition: 0.2s;
+        }
+
+        .frequency-card:hover,
+        .frequency-card.selected {
+          border-color: #a18aff;
+          background: linear-gradient(145deg, #30294b, #191a2c);
+        }
+
+        .frequency-number {
+          font-family: Outfit, sans-serif;
+          font-size: 26px;
+          font-weight: 800;
+          color: #c1aaff;
+          margin-bottom: 8px;
+        }
+
+        .frequency-card h3 {
+          font-size: 13px;
+          margin: 0 0 5px;
+        }
+
+        .frequency-card p {
+          color: #8f92a5;
+          font-size: 11px;
+          margin: 0;
+        }
+
+        .frequency-player {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          margin-top: 15px;
+          padding: 18px 20px;
+          border-radius: 15px;
+          border: 1px solid #37334c;
+          background: #1b1a2a;
+        }
+
+        .frequency-player button {
+          background: #9277f5;
+          color: white;
+          border: 0;
+          border-radius: 50%;
+          width: 42px;
+          height: 42px;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+        }
+
+        .frequency-player input {
+          accent-color: #a78bfa;
+          width: 110px;
+        }
+
+        .frequency-player strong {
+          color: #c4b5fd;
+        }
+
+        .bottom-player {
+          position: fixed;
+          z-index: 20;
+          left: 245px;
+          right: 0;
+          bottom: 0;
+          height: 88px;
+          background: rgba(17, 18, 27, 0.96);
+          backdrop-filter: blur(20px);
+          border-top: 1px solid #30313d;
+          display: grid;
+          grid-template-columns: 1fr 1.5fr 1fr;
+          align-items: center;
+          padding: 0 28px;
+          gap: 20px;
+        }
+
+        .track-info {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          min-width: 0;
+        }
+
+        .track-info img {
+          width: 49px;
+          height: 49px;
+          border-radius: 9px;
+          object-fit: cover;
+        }
+
+        .track-info h4 {
+          margin: 0 0 5px;
+          font-size: 13px;
+        }
+
+        .track-info p {
+          margin: 0;
+          color: #9295a5;
+          font-size: 11px;
+        }
+
+        .player-center {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .player-buttons {
+          display: flex;
+          align-items: center;
+          gap: 23px;
+          color: #a5a7b5;
+        }
+
+        .player-buttons button {
+          border: 0;
+          background: transparent;
+          color: inherit;
+          cursor: pointer;
+          display: grid;
+          place-items: center;
+        }
+
+        .player-buttons .play-button {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: white;
+          color: #11121a;
+        }
+
+        .progress-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          width: min(430px, 100%);
+          color: #85899a;
+          font-size: 10px;
+        }
+
+        .progress-row input {
+          flex: 1;
+          accent-color: #a78bfa;
+          cursor: pointer;
+        }
+
+        .volume-control {
+          display: flex;
+          align-items: center;
+          justify-content: end;
+          gap: 12px;
+          color: #aaa;
+        }
+
+        .volume-control input {
+          width: 95px;
+          accent-color: #a78bfa;
+        }
+
+        .empty-state {
+          color: #9699aa;
+          padding: 30px;
+          text-align: center;
+        }
+
+        @media (max-width: 1100px) {
+          .mood-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .frequency-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .main-content {
+            padding: 25px;
+          }
+        }
+
+        @media (max-width: 760px) {
+          .sidebar {
+            width: 100%;
+            height: 65px;
+            top: auto;
+            bottom: 0;
+            padding: 5px 8px;
+            border-top: 1px solid #30313d;
+            border-right: 0;
+            display: flex;
+            justify-content: space-around;
+            background: #11121b;
+          }
+
+          .logo,
+          .nav-label {
+            display: none;
+          }
+
+          .nav-item {
+            width: auto;
+            margin: 0;
+            padding: 10px;
+            justify-content: center;
+          }
+
+          .nav-item span {
+            display: none;
+          }
+
+          .main-content {
+            margin-left: 0;
+            padding: 20px 16px 150px;
+          }
+
+          .topbar {
+            margin-bottom: 20px;
+          }
+
+          .profile span {
+            display: none;
+          }
+
+          .hero {
+            min-height: 300px;
+            padding: 28px;
+          }
+
+          .hero h1 {
+            font-size: 37px;
+          }
+
+          .mood-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+          }
+
+          .mood-card {
+            height: 150px;
+          }
+
+          .frequency-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+
+          .bottom-player {
+            left: 0;
+            bottom: 65px;
+            height: 78px;
+            padding: 0 13px;
+            grid-template-columns: 1fr auto;
+          }
+
+          .player-center {
+            align-items: end;
+          }
+
+          .player-buttons {
+            gap: 15px;
+          }
+
+          .player-buttons button:nth-child(1),
+          .player-buttons button:nth-child(4),
+          .progress-row,
+          .volume-control {
+            display: none;
+          }
+
+          .track-info img {
+            width: 42px;
+            height: 42px;
+          }
+
+          .frequency-player {
+            flex-wrap: wrap;
+          }
+        }
+
+        @media (max-width: 390px) {
+          .mood-grid {
+            grid-template-columns: 1fr 1fr;
+          }
+
+          .frequency-card {
+            padding: 13px;
+          }
+
+          .frequency-number {
+            font-size: 22px;
+          }
+        }
+      `}</style>
+
+      <aside className="sidebar">
+        <div className="logo">
+          <div className="logo-icon">
+            <Waves size={23} />
+          </div>
+          NOVA
+        </div>
+
+        <div className="nav-label">MENÜ</div>
+
+        {categories.map((category) => {
+          const Icon = category.icon;
+
+          return (
+            <button
+              key={category.name}
+              onClick={() => setActiveCategory(category.name)}
+              className={`nav-item ${
+                activeCategory === category.name ? "active" : ""
+              }`}
+            >
+              <Icon size={19} />
+              <span>{category.name}</span>
+            </button>
+          );
+        })}
+
+        <div style={{ marginTop: 45 }}>
+          <div className="nav-label">KÜTÜPHANE</div>
+          <button className="nav-item">
+            <Clock3 size={19} />
+            <span>Son Dinlenenler</span>
+          </button>
+          <button className="nav-item">
+            <ListMusic size={19} />
+            <span>Çalma Listelerim</span>
+          </button>
+        </div>
+      </aside>
+
+      <div className="main-content">
+        <header className="topbar">
+          <div className="search-box">
+            <Search size={19} />
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Şarkı, sanatçı veya albüm ara..."
+            />
+          </div>
+
+          <div className="profile">
+            <div className="profile-avatar">N</div>
+            <span>Misafir Kullanıcı</span>
+          </div>
+        </header>
+
+        <section className="hero">
+          <div className="hero-content">
+            <div className="eyebrow">MÜZİĞİN YENİ EVRENİ</div>
+            <h1>Sesinle kendi evrenini keşfet.</h1>
+            <p>
+              Müzik, doğa sesleri ve farklı ses frekansları tek bir yerde.
+              Kendine ait ses atmosferini oluştur.
+            </p>
+            <button
+              className="primary-button"
+              onClick={() => playTrack()}
+            >
+              <Play size={17} fill="currentColor" />
+              Şimdi Dinle
+            </button>
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="section-heading">
+            <div>
+              <h2>Bugün nasıl hissediyorsun?</h2>
+              <span>Ruh haline uygun sesleri keşfet</span>
+            </div>
+          </div>
+
+          <div className="mood-grid">
+            {moods.map((mood) => (
+              <div
+                className="mood-card"
+                key={mood.title}
+                onClick={() => setActiveCategory(mood.title)}
+              >
+                <img src={mood.image} alt={mood.title} />
+                <div className="mood-overlay">
+                  <h3>{mood.title}</h3>
+                  <p>{mood.subtitle}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="section-heading">
+            <div>
+              <h2>Senin için seçtiklerimiz</h2>
+              <span>NOVA tarafından hazırlanan koleksiyonlar</span>
+            </div>
+
+            <div className="carousel-controls">
+              <button onClick={() => scrollCarousel(-1)}>
+                <SkipBack size={15} />
+              </button>
+              <button onClick={() => scrollCarousel(1)}>
+                <ChevronRight size={19} />
+              </button>
+            </div>
+          </div>
+
+          <div className="album-carousel" ref={carouselRef}>
+            {albums
+              .filter((album) =>
+                `${album.title} ${album.artist}`
+                  .toLowerCase()
+                  .includes(search.toLowerCase())
+              )
+              .map((album, index) => (
+                <div
+                  className="album-card"
+                  key={album.title}
+                  onClick={() => playTrack(index % tracks.length)}
+                >
+                  <div className="album-image">
+                    <img src={album.image} alt={album.title} />
+                    <button className="album-play">
+                      <Play size={19} fill="currentColor" />
+                    </button>
+                  </div>
+                  <h3>{album.title}</h3>
+                  <p>{album.artist}</p>
+                </div>
+              ))}
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="section-heading">
+            <div>
+              <h2>
+                <Waves
+                  size={21}
+                  style={{
+                    display: "inline",
+                    verticalAlign: "middle",
+                    marginRight: 9,
+                    color: "#b49aff",
+                  }}
+                />
+                Frekans Laboratuvarı
+              </h2>
+              <span>Farklı ses tonlarını keşfet ve dinle</span>
+            </div>
+          </div>
+
+          <div className="frequency-grid">
+            {frequencies.map((frequency) => (
+              <button
+                key={frequency.hz}
+                className={`frequency-card ${
+                  activeFrequency === frequency.hz ? "selected" : ""
+                }`}
+                onClick={() => startFrequency(frequency.hz)}
+              >
+                <div className="frequency-number">{frequency.hz} Hz</div>
+                <h3>{frequency.title}</h3>
+                <p>{frequency.description}</p>
+              </button>
+            ))}
+          </div>
+
+          {frequencyPlaying && activeFrequency && (
+            <div className="frequency-player">
+              <button onClick={() => startFrequency(activeFrequency)}>
+                <Pause size={19} fill="currentColor" />
+              </button>
+
+              <div style={{ flex: 1 }}>
+                <strong>{activeFrequency} Hz</strong>
+                <div style={{ color: "#999bad", fontSize: 12, marginTop: 4 }}>
+                  Frekans çalıyor
+                </div>
+              </div>
+
+              <Volume2 size={18} color="#aaa" />
+
+              <input
+                type="range"
+                min="0"
+                max="0.3"
+                step="0.01"
+                value={frequencyVolume}
+                onChange={(event) => {
+                  const value = Number(event.target.value);
+                  setFrequencyVolume(value);
+                  if (oscillator) {
+                    const gainNode = oscillator.connect
+                      ? oscillator
+                      : null;
+                    void gainNode;
+                  }
+                }}
+              />
+            </div>
+          )}
+        </section>
+
+        <section className="section">
+          <div className="section-heading">
+            <div>
+              <h2>
+                <Sparkles
+                  size={20}
+                  style={{
+                    display: "inline",
+                    verticalAlign: "middle",
+                    marginRight: 9,
+                    color: "#b49aff",
+                  }}
+                />
+                Doğa ile bağlantı kur
+              </h2>
+              <span>Doğanın sakinleştirici ses atmosferleri</span>
+            </div>
+          </div>
+
+          <div className="album-carousel">
+            {[
+              {
+                title: "Yağmur Ormanı",
+                image:
+                  "https://images.unsplash.com/photo-1448375240586-882707db888b?w=700",
+              },
+              {
+                title: "Okyanus Dalgaları",
+                image:
+                  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=700",
+              },
+              {
+                title: "Dağ Esintisi",
+                image:
+                  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=700",
+              },
+              {
+                title: "Gün Batımı",
+                image:
+                  "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=700",
+              },
+            ].map((item) => (
+              <div className="album-card" key={item.title}>
+                <div className="album-image">
+                  <img src={item.image} alt={item.title} />
+                </div>
+                <h3>{item.title}</h3>
+                <p>Doğa atmosferi</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="section-heading">
+            <div>
+              <h2>Son keşifler</h2>
+              <span>Dinlemeye devam et</span>
+            </div>
+          </div>
+
+          {tracks.map((item, index) => (
+            <div
+              key={item.title}
+              onClick={() => playTrack(index)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 15,
+                padding: "12px 10px",
+                borderBottom: "1px solid #242633",
+                cursor: "pointer",
+                borderRadius: 10,
+              }}
+            >
+              <img
+                src={item.image}
+                alt={item.title}
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 9,
+                  objectFit: "cover",
+                }}
+              />
+
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 14, fontWeight: 700 }}>
+                  {item.title}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: "#9295a5",
+                    marginTop: 4,
+                  }}
+                >
+                  {item.artist}
+                </div>
+              </div>
+
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  toggleFavorite(item.title);
+                }}
+                style={{
+                  background: "transparent",
+                  border: 0,
+                  color: favorites.includes(item.title)
+                    ? "#b49aff"
+                    : "#9295a5",
+                  cursor: "pointer",
+                }}
+              >
+                <Heart
+                  size={19}
+                  fill={
+                    favorites.includes(item.title)
+                      ? "currentColor"
+                      : "none"
+                  }
+                />
+              </button>
+
+              <button
+                onClick={() => playTrack(index)}
+                style={{
+                  background: "transparent",
+                  border: 0,
+                  color: "white",
+                  cursor: "pointer",
+                }}
+              >
+                {currentTrack === index && isPlaying ? (
+                  <Pause size={19} />
+                ) : (
+                  <Play size={19} />
+                )}
+              </button>
+            </div>
+          ))}
+        </section>
+      </div>
+
+      <audio
+        ref={audioRef}
+        src={track.src}
+        onTimeUpdate={(event) => {
+          const audio = event.currentTarget;
+          if (audio.duration) {
+            setProgress((audio.currentTime / audio.duration) * 100);
+          }
+        }}
+        onEnded={nextTrack}
+        onLoadedMetadata={(event) => {
+          event.currentTarget.volume = volume / 100;
+        }}
+      />
+
+      <footer className="bottom-player">
+        <div className="track-info">
+          <img src={track.image} alt={track.title} />
+          <div style={{ minWidth: 0 }}>
+            <h4>{track.title}</h4>
+            <p>{track.artist}</p>
+          </div>
+          <button
+            onClick={() => toggleFavorite(track.title)}
+            style={{
+              border: 0,
+              background: "transparent",
+              color: favorites.includes(track.title)
+                ? "#b49aff"
+                : "#9295a5",
+              cursor: "pointer",
+              marginLeft: 5,
+            }}
+          >
+            <Heart
+              size={18}
+              fill={
+                favorites.includes(track.title) ? "currentColor" : "none"
+              }
+            />
+          </button>
+        </div>
+
+        <div className="player-center">
+          <div className="player-buttons">
+            <button>
+              <Shuffle size={16} />
+            </button>
+
+            <button onClick={previousTrack}>
+              <SkipBack size={19} />
+            </button>
+
+            <button
+              className="play-button"
+              onClick={() => playTrack()}
+            >
+              {isPlaying ? (
+                <Pause size={17} fill="currentColor" />
+              ) : (
+                <Play size={17} fill="currentColor" />
+              )}
+            </button>
+
+            <button onClick={nextTrack}>
+              <SkipForward size={19} />
+            </button>
+
+            <button>
+              <Repeat size={16} />
+            </button>
+          </div>
+
+          <div className="progress-row">
+            <span>0:00</span>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={progress}
+              onChange={(event) => {
+                const audio = audioRef.current;
+                if (audio?.duration) {
+                  audio.currentTime =
+                    (Number(event.target.value) / 100) * audio.duration;
+                }
+              }}
+            />
+            <span>--:--</span>
+          </div>
+        </div>
+
+        <div className="volume-control">
+          <Headphones size={18} />
+          <Volume2 size={18} />
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={volume}
+            onChange={(event) => {
+              const value = Number(event.target.value);
+              setVolume(value);
+              if (audioRef.current) {
+                audioRef.current.volume = value / 100;
+              }
+            }}
+          />
+        </div>
+      </footer>
+    </main>
+  );
 }
-
-function sekme(ad) {
-  document.getElementById("p-muzik").className = "panel";
-  document.getElementById("p-frekans").className = "panel";
-  document.getElementById("p-doga").className = "panel";
-  document.getElementById("p-" + ad).className = "panel act";
-
-  document.getElementById("t-muzik").className = "tab";
-  document.getElementById("t-frekans").className = "tab";
-  document.getElementById("t-doga").className = "tab";
-  document.getElementById("t-" + ad).className = "tab act";
-}
-
-function muzikCal(ad, dalga, hiz, temel, kart) {
-  sesBaslat();
-  clearInterval(mZaman);
-  var adim = 0;
-  document.getElementById("bilgi").innerText = "🎵 Çalıyor: " + ad;
-  mZaman = setInterval(function() {
-    var oran = (adim % 4 === 0) ? 1 : (adim % 4 === 1) ? 1.25 : (adim % 4 === 2) ? 1.5 : 1.875;
-    var o = sesCtx.createOscillator();
-    var g = sesCtx.createGain();
-    o.type = dalga;
-    o.frequency.value = temel * oran;
-    g.gain.setValueAtTime(0.12, sesCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, sesCtx.currentTime + 0.6);
-    o.connect(g);
-    g.connect(sesCtx.destination);
-    o.start();
-    o.stop(sesCtx.currentTime + 0.65);
-    adim++;
-  }, hiz);
-}
-
-function frekansCal(hz, kart) {
-  sesBaslat();
-  if (fOsc) { try { fOsc.stop(); } catch (e) {} fOsc = null; }
-  var o = sesCtx.createOscillator();
-  var g = sesCtx.createGain();
-  o.type = "sine";
-  o.frequency.value = hz;
-  g.gain.value = 0.08;
-  o.connect(g);
-  g.connect(sesCtx.destination);
-  o.start();
-  fOsc = o;
-  document.getElementById("katman").innerText = "〰️ Aktif Frekans: " + hz + " Hz";
-}
-
-function dogaCal(ad, tip, frek, kart) {
-  sesBaslat();
-  if (dKaynak) { try { dKaynak.stop(); } catch (e) {} dKaynak = null; }
-  var buf = sesCtx.createBuffer(1, sesCtx.sampleRate * 2, sesCtx.sampleRate);
-  var veri = buf.getChannelData(0);
-  for (var i = 0; i < veri.length; i++) { veri[i] = Math.random() * 2 - 1; }
-  var src = sesCtx.createBufferSource();
-  src.buffer = buf;
-  src.loop = true;
-  var flt = sesCtx.createBiquadFilter();
-  flt.type = tip;
-  flt.frequency.value = frek;
-  var g = sesCtx.createGain();
-  g.gain.value = 0.2;
-  src.connect(flt);
-  flt.connect(g);
-  g.connect(sesCtx.destination);
-  src.start();
-  dKaynak = src;
-  document.getElementById("katman").innerText = "🌿 Aktif Doğa Sesi: " + ad;
-}
-
-function hepsiniDurdur() {
-  clearInterval(mZaman);
-  if (fOsc) { try { fOsc.stop(); } catch (e) {} fOsc = null; }
-  if (dKaynak) { try { dKaynak.stop(); } catch (e) {} dKaynak = null; }
-  document.getElementById("bilgi").innerText = "Durduruldu";
-  document.getElementById("katman").innerText = "Tüm sesler kapatıldı";
-}
-
-document.getElementById("durum").innerText = "✅ SİSTEM ÇALIŞIYOR! Aşağıdan müzik, frekans veya doğa sesi seç.";
-</script>
-</body>
-</html>
