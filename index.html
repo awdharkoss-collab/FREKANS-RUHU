@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Zindan Şövalyesi: Rogue Legend</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
+  body { background: #090a0f; color: #f1f5f9; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; touch-action: none; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+
+  #hud {
+    position: fixed; top: 0; left: 0; width: 100%; padding: 12px 16px;
+    pointer-events: none; display: flex; flex-direction: column; gap: 8px; z-index: 10;
+  }
+  .top-row { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 15px; text-shadow: 0 2px 4px #000; }
+  .badge { background: rgba(15, 23, 42, 0.85); border: 1px solid #334155; padding: 5px 12px; border-radius: 20px; }
+  .xp-wrap { width: 100%; height: 12px; background: #1e293b; border-radius: 10px; overflow: hidden; border: 1px solid #475569; }
+  #xp-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.15s; }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(5, 7, 12, 0.88);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 20px; z-index: 20; text-align: center;
+  }
+  .hidden { display: none !important; }
+  h1 { font-size: 34px; color: #f59e0b; text-shadow: 0 0 20px rgba(245, 158, 11, 0.5); margin-bottom: 10px; }
+  p.sub { color: #94a3b8; max-width: 420px; margin-bottom: 24px; line-height: 1.5; }
+  .btn {
+    background: linear-gradient(135deg, #d97706, #b45309); color: #fff; border: none;
+    padding: 14px 36px; font-size: 18px; font-weight: bold; border-radius: 12px;
+    cursor: pointer; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4);
+  }
+  .btn:active { transform: scale(0.96); }
+
+  .cards { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; max-width: 760px; width: 100%; margin-top: 16px; }
+  .card {
+    background: linear-gradient(180deg, #1e293b, #0f172a); border: 2px solid #475569;
+    border-radius: 14px; padding: 18px; width: 220px; cursor: pointer; transition: 0.15s;
+  }
+  .card:hover, .card:active { border-color: #f59e0b; transform: translateY(-4px); }
+  .card-icon { font-size: 36px; margin-bottom: 8px; }
+  .card-title { font-size: 17px; font-weight: bold; color: #fbbf24; margin-bottom: 6px; }
+  .card-desc { font-size: 13px; color: #cbd5e1; line-height: 1.4; }
+</style>
+</head>
+<body>
+
+<div id="hud">
+  <div class="top-row">
+    <div class="badge" id="lvl-txt">⚔️ Sv. 1</div>
+    <div class="badge" id="time-txt">⏱️ 00:00</div>
+    <div class="badge" id="kill-txt">💀 0</div>
+  </div>
+  <div class="xp-wrap"><div id="xp-bar"></div></div>
+</div>
+
+<div id="start-screen" class="overlay">
+  <h1>⚔️ ZİNDAN ŞÖVALYESİ</h1>
+  <p class="sub">Karanlık zindanda hayatta kal! İskelet ordularını biç, ruh kristallerini topla ve güçlendirme kartlarıyla efsanevi şövalyeye dönüş.</p>
+  <button class="btn" onclick="startGame()">ZİNDANA GİR</button>
+</div>
+
+<div id="levelup-screen" class="overlay hidden">
+  <h1>✨ SEVİYE ATLADIN!</h1>
+  <p class="sub">Bir güçlendirme kartı seç:</p>
+  <div class="cards" id="card-container"></div>
+</div>
+
+<div id="gameover-screen" class="overlay hidden">
+  <h1 style="color:#ef4444;">💀 ŞÖVALYE DÜŞTÜ</h1>
+  <p class="sub" id="final-stats"></p>
+  <button class="btn" onclick="startGame()">TEKRAR DENE</button>
+</div>
+
+<canvas id="game"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let W, H;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+window.addEventListener("resize", resize);
+resize();
+
+let audioCtx = null;
+function playTone(freq, type, dur, vol = 0.08) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + dur);
+  } catch (e) {}
+}
+
+let state = "MENU";
+let player, enemies, bullets, gems, particles, floatTexts;
+let keys = {}, joy = { active: false, sx: 0, sy: 0, dx: 0, dy: 0 };
+let gameTime = 0, lastTime = 0, spawnTimer = 0, bossTimer = 0, kills = 0;
+
+const UPGRADES = [
+  { id: "multi", icon: "🗡️", title: "Çoklu Hançer", desc: "Aynı anda +1 ekstra hançer fırlatır." },
+  { id: "speed", icon: "⚡", title: "Kılıç Hızı", desc: "Saldırı hızını %22 artırır." },
+  { id: "dmg", icon: "🔥", title: "Alevli Çelik", desc: "Saldırı hasarını %30 artırır." },
+  { id: "aura", icon: "🛡️", title: "Kutsal Aura", desc: "Yakındaki düşmanları yakan kutsal halka açar/güçlendirir." },
+  { id: "move", icon: "🥾", title: "Gölge Çizmesi", desc: "Hareket hızını %18 artırır." },
+  { id: "heal", icon: "🧪", title: "Can İksiri", desc: "Maksimum canı +25 artırır ve canı tamamen doldurur." }
+];
+
+window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
+window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
+
+canvas.addEventListener("touchstart", e => {
+  const t = e.touches[0];
+  joy.active = true; joy.sx = t.clientX; joy.sy = t.clientY; joy.dx = 0; joy.dy = 0;
+});
+canvas.addEventListener("touchmove", e => {
+  if (!joy.active) return;
+  const t = e.touches[0];
+  const vx = t.clientX - joy.sx, vy = t.clientY - joy.sy;
+  const dist = Math.hypot(vx, vy);
+  if (dist > 0) {
+    const cl = Math.min(dist, 50);
+    joy.dx = (vx / dist) * (cl / 50);
+    joy.dy = (vy / dist) * (cl / 50);
+  }
+});
+canvas.addEventListener("touchend", () => { joy.active = false; joy.dx = 0; joy.dy = 0; });
+
+function startGame() {
+  document.getElementById("start-screen").classList.add("hidden");
+  document.getElementById("gameover-screen").classList.add("hidden");
+  document.getElementById("levelup-screen").classList.add("hidden");
+
+  player = {
+    x: 0, y: 0, r: 16, hp: 100, maxHp: 100, speed: 210,
+    lvl: 1, xp: 0, nextXp: 10,
+    fireRate: 0.65, fireTimer: 0, dmg: 22, multi: 1, auraLvl: 0, auraTimer: 0
+  };
+  enemies = []; bullets = []; gems = []; particles = []; floatTexts = [];
+  gameTime = 0; spawnTimer = 0; bossTimer = 0; kills = 0;
+  updateHUD();
+  state = "PLAY";
+  lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+
+function updateHUD() {
+  document.getElementById("lvl-txt").innerText = `⚔️ Sv. ${player.lvl}`;
+  document.getElementById("kill-txt").innerText = `💀 ${kills}`;
+  const m = String(Math.floor(gameTime / 60)).padStart(2, "0");
+  const s = String(Math.floor(gameTime % 60)).padStart(2, "0");
+  document.getElementById("time-txt").innerText = `⏱️ ${m}:${s}`;
+  document.getElementById("xp-bar").style.width = `${Math.min(100, (player.xp / player.nextXp) * 100)}%`;
+}
+
+function spawnEnemy(isBoss = false) {
+  const angle = Math.random() * Math.PI * 2;
+  const dist = Math.max(W, H) * 0.65 + 40;
+  const scale = 1 + gameTime / 55;
+  enemies.push({
+    x: player.x + Math.cos(angle) * dist,
+    y: player.y + Math.sin(angle) * dist,
+    r: isBoss ? 34 : 14,
+    hp: isBoss ? 450 * scale : 32 * scale,
+    maxHp: isBoss ? 450 * scale : 32 * scale,
+    speed: isBoss ? 68 : 85 + Math.random() * 25,
+    dmg: isBoss ? 28 : 12,
+    isBoss,
+    color: isBoss ? "#dc2626" : "#94a3b8"
+  });
+}
+
+function addFloat(x, y, txt, color = "#fff") {
+  floatTexts.push({ x, y, txt, color, life: 0.7 });
+}
+
+function burst(x, y, color, count = 8) {
+  for (let i = 0; i < count; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const sp = 50 + Math.random() * 120;
+    particles.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 0.35, color });
+  }
+}
+
+function triggerLevelUp() {
+  state = "LEVELUP";
+  playTone(520, "triangle", 0.25, 0.12);
+  const cont = document.getElementById("card-container");
+  cont.innerHTML = "";
+  const pool = [...UPGRADES].sort(() => Math.random() - 0.5).slice(0, 3);
+  pool.forEach(u => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `<div class="card-icon">${u.icon}</div><div class="card-title">${u.title}</div><div class="card-desc">${u.desc}</div>`;
+    div.onclick = () => applyUpgrade(u.id);
+    cont.appendChild(div);
+  });
+  document.getElementById("levelup-screen").classList.remove("hidden");
+}
+
+function applyUpgrade(id) {
+  if (id === "multi") player.multi += 1;
+  if (id === "speed") player.fireRate *= 0.78;
+  if (id === "dmg") player.dmg *= 1.3;
+  if (id === "aura") player.auraLvl += 1;
+  if (id === "move") player.speed *= 1.18;
+  if (id === "heal") { player.maxHp += 25; player.hp = player.maxHp; }
+
+  document.getElementById("levelup-screen").classList.add("hidden");
+  state = "PLAY";
+  lastTime = performance.now();
+  requestAnimationFrame(loop);
+}
+
+function loop(now) {
+  if (state !== "PLAY") return;
+  const dt = Math.min(0.05, (now - lastTime) / 1000);
+  lastTime = now;
+  gameTime += dt;
+
+  // Hareket
+  let mx = 0, my = 0;
+  if (keys["w"] || keys["arrowup"]) my -= 1;
+  if (keys["s"] || keys["arrowdown"]) my += 1;
+  if (keys["a"] || keys["arrowleft"]) mx -= 1;
+  if (keys["d"] || keys["arrowright"]) mx += 1;
+  if (joy.active) { mx = joy.dx; my = joy.dy; }
+  const len = Math.hypot(mx, my);
+  if (len > 0) {
+    player.x += (mx / Math.max(1, len)) * player.speed * dt;
+    player.y += (my / Math.max(1, len)) * player.speed * dt;
+  }
+
+  // Düşman Doğurma
+  spawnTimer -= dt;
+  if (spawnTimer <= 0) {
+    spawnEnemy(false);
+    spawnTimer = Math.max(0.22, 1.1 - gameTime * 0.008);
+  }
+  bossTimer += dt;
+  if (bossTimer >= 45) {
+    bossTimer = 0;
+    spawnEnemy(true);
