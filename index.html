@@ -3,71 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NOVA MUSIC — Müzik, Frekans & Doğa Sesleri</title>
+<title>NOVA MUSIC — Müzik & Frekans Platformu</title>
 <style>
-:root{
-  --bg:#060811;--panel:#0d1222;--card:#131a30;--card-hover:#1a2340;
-  --border:rgba(139,92,246,.25);--text:#f8fafc;--muted:#94a3b8;
-  --purple:#8b5cf6;--blue:#38bdf8;--pink:#ec4899;--green:#10b981;
-}
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
-body{background:var(--bg);color:var(--text);display:flex;min-height:100vh;overflow-x:hidden;padding-bottom:96px}
-.side{width:240px;background:var(--panel);border-right:1px solid var(--border);padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:fixed;top:0;bottom:84px;left:0;z-index:20;overflow-y:auto}
-.brand{font-size:21px;font-weight:900;letter-spacing:1px;padding:6px 10px 16px;background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav{padding:10px 12px;border-radius:12px;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.15s}
-.nav:hover,.nav.act{background:rgba(139,92,246,.18);color:#fff}
-.nav.act{border-left:3px solid var(--blue)}
-.div-line{height:1px;background:var(--border);margin:8px 0}
-.main{margin-left:240px;flex:1;padding:22px 26px;max-width:100%}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
-.search{flex:1;max-width:420px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 16px;color:#fff;font-size:13px;outline:none}
-.badge{background:linear-gradient(90deg,rgba(56,189,248,.15),rgba(139,92,246,.2));border:1px solid var(--border);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;color:#e0f2fe}
-.sec-title{font-size:18px;font-weight:800;margin:22px 0 12px;display:flex;align-items:center;justify-content:space-between}
-.sec-sub{font-size:12px;color:var(--muted);font-weight:500}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px}
-.card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;cursor:pointer;transition:.18s;position:relative}
-.card:hover{background:var(--card-hover);transform:translateY(-3px);border-color:var(--border)}
-.card.playing{border-color:var(--blue);box-shadow:0 0 22px rgba(56,189,248,.25)}
-.cover{width:100%;aspect-ratio:1/1;border-radius:12px;margin-bottom:10px;display:flex;align-items:center;justify-content:center;font-size:38px}
-.c-title{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.c-sub{font-size:12px;color:var(--muted);margin-top:3px}
-.fav-btn{position:absolute;top:10px;right:10px;background:rgba(6,8,17,.65);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:13px}
-.freq-card{background:linear-gradient(145deg,#111830,#0b1020);border:1px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:.18s}
-.freq-card:hover,.freq-card.act{border-color:var(--blue);box-shadow:0 0 20px rgba(56,189,248,.25)}
-.hz-tag{font-size:22px;font-weight:900;color:var(--blue)}
-.nat-pill{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;display:flex;flex-direction:column;gap:8px}
-.nat-pill.act{border-color:var(--green);background:rgba(16,185,129,.15)}
-.mixer{background:linear-gradient(135deg,rgba(19,26,48,.95),rgba(13,18,34,.95));border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:20px}
-.mix-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:12px}
-.mix-ch{background:#090d1a;border:1px solid rgba(255,255,255,.06);padding:12px;border-radius:12px}
-input[type=range]{width:100%;accent-color:var(--blue);margin-top:6px;cursor:pointer}
-.ai-box{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;max-width:720px}
-.ai-input{display:flex;gap:10px;margin-top:12px}
-.ai-input input{flex:1;background:#090d1a;border:1px solid var(--border);border-radius:12px;padding:12px;color:#fff;outline:none}
-.btn-prim{background:linear-gradient(90deg,var(--blue),var(--purple));border:none;color:#fff;padding:10px 18px;border-radius:12px;font-weight:700;cursor:pointer}
-.chip{display:inline-block;background:rgba(139,92,246,.18);border:1px solid var(--border);padding:6px 12px;border-radius:20px;font-size:12px;margin:6px 6px 0 0;cursor:pointer}
-.player{position:fixed;bottom:0;left:0;right:0;height:84px;background:rgba(10,14,26,.96);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:50;gap:14px}
-.p-left{display:flex;align-items:center;gap:12px;min-width:190px;cursor:pointer}
-.p-art{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
-.p-mid{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;max-width:480px}
-.ctrl-row{display:flex;align-items:center;gap:14px}
-.c-btn{background:none;border:none;color:#e2e8f0;font-size:18px;cursor:pointer}
-.play-circle{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.viz{display:flex;align-items:flex-end;gap:3px;height:18px}
-.vbar{width:3px;height:4px;background:var(--blue);border-radius:2px;transition:height .12s}
-.p-right{display:flex;align-items:center;gap:10px;min-width:160px;justify-content:flex-end}
-.fs-modal{position:fixed;inset:0;background:radial-gradient(circle at top,#1b1440,#060811 80%);z-index:100;display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center}
-.fs-modal.open{display:flex}
-.fs-art{width:220px;height:220px;border-radius:28px;font-size:86px;display:flex;align-items:center;justify-content:center;box-shadow:0 24px 60px rgba(139,92,246,.35);margin-bottom:22px}
+body{background:#060811;color:#f8fafc;display:flex;min-height:100vh;padding-bottom:92px}
+.side{width:230px;background:#0d1222;border-right:1px solid rgba(139,92,246,.25);padding:18px 12px;display:flex;flex-direction:column;gap:6px;position:fixed;top:0;bottom:84px;left:0}
+.brand{font-size:20px;font-weight:900;color:#38bdf8;padding:6px 10px 14px}
+.nav{padding:10px 12px;border-radius:12px;color:#94a3b8;font-size:13px;font-weight:700;cursor:pointer}
+.nav:hover,.nav.act{background:rgba(139,92,246,.2);color:#fff}
+.main{margin-left:230px;flex:1;padding:20px 24px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px;flex-wrap:wrap}
+.status{background:rgba(16,185,129,.15);border:1px solid #10b981;color:#6ee7b7;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700}
+.mixer{background:#0f1629;border:1px solid rgba(139,92,246,.3);border-radius:16px;padding:16px;margin-bottom:20px}
+.mrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:10px}
+.mch{background:#080c18;padding:10px;border-radius:10px;font-size:12px}
+input[type=range]{width:100%;accent-color:#38bdf8;margin-top:6px}
+h2{font-size:17px;margin:18px 0 10px;color:#e2e8f0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+.card{background:#131a30;border:1.5px solid rgba(255,255,255,.07);border-radius:14px;padding:14px;cursor:pointer;transition:.15s}
+.card:hover{border-color:#38bdf8;transform:translateY(-2px)}
+.card.act{border-color:#38bdf8;background:#1a2544;box-shadow:0 0 18px rgba(56,189,248,.25)}
+.ico{font-size:30px;margin-bottom:8px}
+.ttl{font-size:14px;font-weight:700}
+.sub{font-size:11px;color:#94a3b8;margin-top:3px}
+.btn{background:linear-gradient(90deg,#0284c7,#7c3aed);border:none;color:#fff;padding:9px 16px;border-radius:10px;font-weight:700;cursor:pointer;font-size:12px}
+.ai-in{display:flex;gap:8px;margin:10px 0}
+.ai-in input{flex:1;background:#080c18;border:1px solid #334155;border-radius:10px;padding:10px;color:#fff}
+.player{position:fixed;bottom:0;left:0;right:0;height:84px;background:#0a0e1a;border-top:1px solid rgba(139,92,246,.3);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:50}
+.pbtn{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#8b5cf6);border:none;color:#fff;font-size:18px;cursor:pointer}
 .view{display:none}
 .view.act{display:block}
-.note-banner{font-size:11px;color:var(--muted);background:rgba(255,255,255,.03);padding:8px 12px;border-radius:10px;margin-top:12px}
 @media(max-width:768px){
-  .side{width:100%;height:auto;bottom:84px;top:auto;flex-direction:row;overflow-x:auto;padding:8px;border-right:none;border-top:1px solid var(--border)}
-  .brand,.div-line{display:none}
-  .nav{white-space:nowrap;padding:8px 12px;font-size:12px}
-  .main{margin-left:0;padding:16px 14px 70px}
-  .p-right{display:none}
+  .side{width:100%;height:auto;bottom:84px;top:auto;flex-direction:row;overflow-x:auto;padding:8px}
+  .brand{display:none}
+  .main{margin-left:0;padding:14px 14px 70px}
 }
 </style>
 </head>
@@ -75,59 +44,88 @@ input[type=range]{width:100%;accent-color:var(--blue);margin-top:6px;cursor:poin
 
 <aside class="side">
   <div class="brand">✦ NOVA MUSIC</div>
-  <div class="nav act" onclick="go('home',this)">🏠 Ana Sayfa</div>
-  <div class="nav" onclick="go('freq',this)">〰️ Frekans Merkezi</div>
-  <div class="nav" onclick="go('nature',this)">🌿 Doğa Sesleri</div>
-  <div class="nav" onclick="go('mood',this)">🎭 Ruh Hâli</div>
-  <div class="nav" onclick="go('ai',this)">🤖 NOVA AI</div>
-  <div class="div-line"></div>
-  <div class="nav" onclick="go('favs',this)">❤️ Favorilerim</div>
-  <div class="nav" onclick="go('stats',this)">📊 İstatistikler</div>
+  <div class="nav act" id="n-home" onclick="showTab('home')">🏠 Ana Sayfa</div>
+  <div class="nav" id="n-freq" onclick="showTab('freq')">〰️ Frekans Merkezi</div>
+  <div class="nav" id="n-nat" onclick="showTab('nat')">🌿 Doğa Sesleri</div>
+  <div class="nav" id="n-mood" onclick="showTab('mood')">🎭 Ruh Hâli</div>
+  <div class="nav" id="n-ai" onclick="showTab('ai')">🤖 NOVA AI</div>
 </aside>
 
 <main class="main">
-  <div class="topbar">
-    <input class="search" id="searchBox" placeholder="Müzik, frekans (432 Hz), doğa sesi veya ruh hâli ara..." oninput="handleSearch(this.value)">
-    <div class="badge" id="activeMixBadge">🎛️ Aktif Katman: Hazır</div>
+  <div class="top">
+    <div class="status" id="sysStatus">⏳ Yükleniyor...</div>
+    <button type="button" class="btn" style="background:#1e293b" onclick="stopAll()">⏹ Tüm Sesleri Durdur</button>
   </div>
 
   <div class="mixer">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-      <div>
-        <strong style="font-size:15px">🎛️ NOVA Çok Kanallı Ses Mikseri</strong>
-        <span style="font-size:12px;color:var(--muted);margin-left:8px">Müzik + Frekans + Doğa sesini aynı anda birleştir</span>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button type="button" class="btn-prim" style="padding:7px 12px;font-size:12px" onclick="savePreset()">💾 Karışımı Kaydet</button>
-        <button type="button" class="btn-prim" style="padding:7px 12px;font-size:12px;background:#1e293b" onclick="stopAllLayers()">⏹ Tümünü Sustur</button>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong>🎛️ NOVA Çok Kanallı Ses Mikseri</strong>
+      <span style="font-size:12px;color:#38bdf8" id="mixInfo">Hazır</span>
     </div>
-    <div class="mix-row">
-      <div class="mix-ch">
-        <div style="display:flex;justify-content:space-between;font-size:12px"><span>🎵 Müzik Kanalı</span><b id="lblMusic">Seçilmedi</b></div>
-        <input type="range" min="0" max="1" step="0.02" value="0.7" oninput="setLayerVol('music',this.value)">
-      </div>
-      <div class="mix-ch">
-        <div style="display:flex;justify-content:space-between;font-size:12px"><span>〰️ Frekans Kanalı</span><b id="lblFreq">Kapalı</b></div>
-        <input type="range" min="0" max="0.25" step="0.005" value="0.08" oninput="setLayerVol('freq',this.value)">
-      </div>
-      <div class="mix-ch">
-        <div style="display:flex;justify-content:space-between;font-size:12px"><span>🌿 Doğa Sesi Kanalı</span><b id="lblNat">Kapalı</b></div>
-        <input type="range" min="0" max="0.6" step="0.02" value="0.25" oninput="setLayerVol('nat',this.value)">
-      </div>
+    <div class="mrow">
+      <div class="mch">🎵 Müzik: <b id="lblM">Kapalı</b><input type="range" min="0" max="1" step="0.02" value="0.7" oninput="setVol('m',this.value)"></div>
+      <div class="mch">〰️ Frekans: <b id="lblF">Kapalı</b><input type="range" min="0" max="0.25" step="0.005" value="0.08" oninput="setVol('f',this.value)"></div>
+      <div class="mch">🌿 Doğa: <b id="lblN">Kapalı</b><input type="range" min="0" max="0.6" step="0.02" value="0.25" oninput="setVol('n',this.value)"></div>
     </div>
-    <div id="savedPresets" style="margin-top:8px"></div>
   </div>
 
-  <section class="view act" id="v-home">
-    <div class="sec-title"><span>✨ Sana Özel & Günün Müzikleri</span><span class="sec-sub">Üretken & Telifsiz NOVA Ses Motoru</span></div>
-    <div class="grid" id="homeTracks"></div>
+  <div class="view act" id="v-home">
+    <h2>✨ Günün Müzikleri</h2>
+    <div class="grid">
+      <div class="card" id="tr-0" onclick="playMusic(0,'Midnight Lofi 432','triangle',420,216)"><div class="ico">🌙</div><div class="ttl">Midnight Lofi 432</div><div class="sub">NOVA Beats • Odak</div></div>
+      <div class="card" id="tr-1" onclick="playMusic(1,'Velvet Piano','sine',650,261.6)"><div class="ico">🎹</div><div class="ttl">Velvet Piano</div><div class="sub">Aura Keys • Uyku</div></div>
+      <div class="card" id="tr-2" onclick="playMusic(2,'Cyber Phonk','sawtooth',320,110)"><div class="ico">🔥</div><div class="ttl">Cyber Phonk</div><div class="sub">Kuro Synth • Enerji</div></div>
+      <div class="card" id="tr-3" onclick="playMusic(3,'Deep Nebula','sine',900,174)"><div class="ico">🌌</div><div class="ttl">Deep Nebula</div><div class="sub">Cosmos • Meditasyon</div></div>
+    </div>
 
-    <div class="sec-title"><span>〰️ Öne Çıkan Frekanslar</span><span class="sec-sub">Müziğin üzerine tek tıkla eklenir</span></div>
-    <div class="grid" id="homeFreqs"></div>
+    <h2>〰️ Hızlı Frekans Ekle (Müziğin Üzerine)</h2>
+    <div class="grid">
+      <div class="card" id="hf-432" onclick="toggleFreq(432)"><div class="ico">〰️</div><div class="ttl">432 Hz</div><div class="sub">Doğal Uyum & Huzur</div></div>
+      <div class="card" id="hf-528" onclick="toggleFreq(528)"><div class="ico">✨</div><div class="ttl">528 Hz</div><div class="sub">Pozitif Enerji</div></div>
+      <div class="card" id="hf-396" onclick="toggleFreq(396)"><div class="ico">🧘</div><div class="ttl">396 Hz</div><div class="sub">Stres Çözülümü</div></div>
+      <div class="card" id="hf-963" onclick="toggleFreq(963)"><div class="ico">💎</div><div class="ttl">963 Hz</div><div class="sub">Zihin Berraklığı</div></div>
+    </div>
 
-    <div class="sec-title"><span>🌿 Doğa Atmosferleri</span><span class="sec-sub">Arka plan ses katmanı</span></div>
-    <div class="grid" id="homeNature"></div>
-  </section>
+    <h2>🌿 Hızlı Doğa Sesi Ekle</h2>
+    <div class="grid">
+      <div class="card" id="hn-rain" onclick="toggleNat('rain','Yağmur','bandpass',850)"><div class="ico">🌧️</div><div class="ttl">Yağmur</div><div class="sub">Arka plan katmanı</div></div>
+      <div class="card" id="hn-ocean" onclick="toggleNat('ocean','Okyanus','lowpass',320)"><div class="ico">🌊</div><div class="ttl">Okyanus</div><div class="sub">Derin dalga sesi</div></div>
+      <div class="card" id="hn-fire" onclick="toggleNat('fire','Şömine','lowpass',240)"><div class="ico">🔥</div><div class="ttl">Şömine</div><div class="sub">Sıcak ateş sesi</div></div>
+      <div class="card" id="hn-forest" onclick="toggleNat('forest','Orman','bandpass',1200)"><div class="ico">🌲</div><div class="ttl">Orman</div><div class="sub">Doğa atmosferi</div></div>
+    </div>
+  </div>
 
-  <section class="view" id="v-freq">
+  <div class="view" id="v-freq">
+    <h2>〰️ FREQUENCY CENTER (174 Hz – 963 Hz)</h2>
+    <div class="grid">
+      <div class="card" id="fq-174" onclick="toggleFreq(174)"><div class="ttl">174 Hz</div><div class="sub">Temel Gevşeme</div></div>
+      <div class="card" id="fq-285" onclick="toggleFreq(285)"><div class="ttl">285 Hz</div><div class="sub">Yenilenme Tonu</div></div>
+      <div class="card" id="fq-396" onclick="toggleFreq(396)"><div class="ttl">396 Hz</div><div class="sub">Stres Çözülümü</div></div>
+      <div class="card" id="fq-417" onclick="toggleFreq(417)"><div class="ttl">417 Hz</div><div class="sub">Akış & Değişim</div></div>
+      <div class="card" id="fq-432" onclick="toggleFreq(432)"><div class="ttl">432 Hz</div><div class="sub">Doğal Uyum</div></div>
+      <div class="card" id="fq-528" onclick="toggleFreq(528)"><div class="ttl">528 Hz</div><div class="sub">Huzur & Dinginlik</div></div>
+      <div class="card" id="fq-639" onclick="toggleFreq(639)"><div class="ttl">639 Hz</div><div class="sub">İçsel Uyum</div></div>
+      <div class="card" id="fq-741" onclick="toggleFreq(741)"><div class="ttl">741 Hz</div><div class="sub">Zihin Berraklığı</div></div>
+      <div class="card" id="fq-852" onclick="toggleFreq(852)"><div class="ttl">852 Hz</div><div class="sub">Derin Farkındalık</div></div>
+      <div class="card" id="fq-963" onclick="toggleFreq(963)"><div class="ttl">963 Hz</div><div class="sub">Saf Sessizlik</div></div>
+    </div>
+  </div>
+
+  <div class="view" id="v-nat">
+    <h2>🌿 Doğa Sesleri Kütüphanesi</h2>
+    <div class="grid">
+      <div class="card" onclick="toggleNat('rain','Yağmur','bandpass',850)"><div class="ico">🌧️</div><div class="ttl">Yağmur</div></div>
+      <div class="card" onclick="toggleNat('thunder','Gök Gürültüsü','lowpass',140)"><div class="ico">⛈️</div><div class="ttl">Gök Gürültüsü</div></div>
+      <div class="card" onclick="toggleNat('ocean','Okyanus','lowpass',320)"><div class="ico">🌊</div><div class="ttl">Okyanus</div></div>
+      <div class="card" onclick="toggleNat('waves','Deniz Dalgaları','bandpass',420)"><div class="ico">🏖️</div><div class="ttl">Deniz Dalgaları</div></div>
+      <div class="card" onclick="toggleNat('forest','Orman','bandpass',1200)"><div class="ico">🌲</div><div class="ttl">Orman</div></div>
+      <div class="card" onclick="toggleNat('birds','Kuş Sesleri','highpass',2400)"><div class="ico">🐦</div><div class="ttl">Kuş Sesleri</div></div>
+      <div class="card" onclick="toggleNat('wind','Rüzgâr','bandpass',520)"><div class="ico">🍃</div><div class="ttl">Rüzgâr</div></div>
+      <div class="card" onclick="toggleNat('fire','Şömine','lowpass',240)"><div class="ico">🔥</div><div class="ttl">Şömine</div></div>
+      <div class="card" onclick="toggleNat('river','Nehir','bandpass',680)"><div class="ico">🏞️</div><div class="ttl">Nehir</div></div>
+      <div class="card" onclick="toggleNat('night','Gece Böcekleri','highpass',3200)"><div class="ico">🦗</div><div class="ttl">Gece Böcekleri</div></div>
+    </div>
+  </div>
+
+  <div class="view" id="v-mood">
+    <h2>🎭 Ruh Hâline Göre Tek Tık Kombinasyonlar</h2>
