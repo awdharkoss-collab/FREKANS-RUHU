@@ -15,11 +15,11 @@ canvas{display:block;width:100vw;height:100vh}
 <div id="st" class="ov">
   <h1 style="color:#fbbf24">⚔️ ZİNDAN ŞÖVALYESİ</h1>
   <div class="row">
-    <div class="hc sel" id="h0" onclick="selH(0)"><div style="font-size:34px">⚡</div><b>Yıldırım Lordu</b><p style="font-size:11px;color:#94a3b8">Çekiç & Şimşek</p></div>
-    <div class="hc" id="h1" onclick="selH(1)"><div style="font-size:34px">🤖</div><b>Plazma Zırhı</b><p style="font-size:11px;color:#94a3b8">Hızlı Lazer Işını</p></div>
-    <div class="hc" id="h2" onclick="selH(2)"><div style="font-size:34px">🗡️</div><b>Zümrüt Şövalye</b><p style="font-size:11px;color:#94a3b8">Dev Kılıç & Zırh</p></div>
+    <div class="hc sel" id="h0"><div style="font-size:34px">⚡</div><b>Yıldırım Lordu</b><p style="font-size:11px;color:#94a3b8">Çekiç & Şimşek</p></div>
+    <div class="hc" id="h1"><div style="font-size:34px">🤖</div><b>Plazma Zırhı</b><p style="font-size:11px;color:#94a3b8">Hızlı Lazer Işını</p></div>
+    <div class="hc" id="h2"><div style="font-size:34px">🗡️</div><b>Zümrüt Şövalye</b><p style="font-size:11px;color:#94a3b8">Dev Kılıç & Zırh</p></div>
   </div>
-  <button class="btn" id="go">SAVAŞA GİR</button>
+  <button type="button" class="btn" id="go">SAVAŞA GİR</button>
 </div>
 <div id="lu" class="ov hid"><h2 style="color:#fbbf24">✨ YETENEK SEÇ</h2><div class="row" id="cb"></div></div>
 <canvas id="c"></canvas>
@@ -27,7 +27,9 @@ canvas{display:block;width:100vw;height:100vh}
 const c=document.getElementById("c"),x=c.getContext("2d");let W=c.width=innerWidth,H=c.height=innerHeight;
 onresize=()=>{W=c.width=innerWidth;H=c.height=innerHeight};
 let ht=0,p,en=[],bu=[],ge=[],ft=[],k={},joy={a:0,sx:0,sy:0,dx:0,dy:0},t=0,lt=0,st=0,bt=0,kl=0,run=0,an=0;
-function selH(n){ht=n;for(let i=0;i<3;i++)document.getElementById("h"+i).className=i==n?"hc sel":"hc"}
+document.getElementById("h0").onclick=()=>{ht=0;document.getElementById("h0").className="hc sel";document.getElementById("h1").className="hc";document.getElementById("h2").className="hc"};
+document.getElementById("h1").onclick=()=>{ht=1;document.getElementById("h0").className="hc";document.getElementById("h1").className="hc sel";document.getElementById("h2").className="hc"};
+document.getElementById("h2").onclick=()=>{ht=2;document.getElementById("h0").className="hc";document.getElementById("h1").className="hc";document.getElementById("h2").className="hc sel"};
 onkeydown=e=>k[e.key.toLowerCase()]=1;onkeyup=e=>k[e.key.toLowerCase()]=0;
 c.ontouchstart=e=>{let q=e.touches.item(0);if(q)joy={a:1,sx:q.clientX,sy:q.clientY,dx:0,dy:0}};
 c.ontouchmove=e=>{let q=e.touches.item(0);if(joy.a&&q){let vx=q.clientX-joy.sx,vy=q.clientY-joy.sy,d=Math.hypot(vx,vy);if(d>0){let cl=Math.min(d,45);joy.dx=vx/d*(cl/45);joy.dy=vy/d*(cl/45)}}};
@@ -40,7 +42,7 @@ document.getElementById("go").onclick=()=>{
 function lvl(){
   run=0;const b=document.getElementById("cb");b.innerHTML="";
   [{i:"m",t:"⚔️ +1 Silah"},{i:"s",t:"⚡ Hız +%25"},{i:"d",t:"🔥 Hasar +%35"},{i:"a",t:"🌀 Plazma Aura"},{i:"h",t:"🧪 +45 Max Can"}].sort(()=>Math.random()-.5).slice(0,3).forEach(u=>{
-    let d=document.createElement("div");d.className="hc";d.innerHTML=`<b>${u.t}</b>`;
+    let d=document.createElement("div");d.className="hc";d.innerHTML="<b>"+u.t+"</b>";
     d.onclick=()=>{if(u.i=="m")p.m++;if(u.i=="s")p.fr*=.75;if(u.i=="d")p.d*=1.35;if(u.i=="a")p.au++;if(u.i=="h"){p.mhp+=45;p.hp=p.mhp}
     document.getElementById("lu").classList.add("hid");run=1;lt=performance.now();requestAnimationFrame(lp)};b.appendChild(d);
   });document.getElementById("lu").classList.remove("hid");
@@ -80,7 +82,7 @@ function lp(n){
   x.fillStyle=ht==0?"#fde68a":ht==1?"#fbbf24":"#fed7aa";x.beginPath();x.arc(0,-10+bob,11,0,6.28);x.fill();
   x.rotate(p.dir);x.fillStyle=ht==0?"#38bdf8":ht==1?"#ef4444":"#4ade80";x.fillRect(10,-4,22,8);x.restore();
   x.font="900 15px sans-serif";x.textAlign="center";ft.forEach(f=>{x.fillStyle=f.c;x.fillText(f.tx,f.x,f.y)});x.restore();
-  x.fillStyle="#fff";x.font="900 15px sans-serif";x.fillText(`⭐ Lv.${p.l} | ❤️ ${Math.ceil(p.hp)}/${p.mhp} | Round ${Math.floor(t/20)+1} | 💀 ${kl}`,16,28);
+  x.fillStyle="#fff";x.font="900 15px sans-serif";x.fillText("⭐ Lv."+p.l+" | ❤️ "+Math.ceil(p.hp)+"/"+p.mhp+" | Round "+(Math.floor(t/20)+1)+" | 💀 "+kl,16,28);
   requestAnimationFrame(lp);
 }
 </script></body></html>
