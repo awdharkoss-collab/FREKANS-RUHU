@@ -26,8 +26,8 @@ canvas{display:block;width:100vw;height:100vh}
 <script>
 const c=document.getElementById("c"),x=c.getContext("2d");let W=c.width=innerWidth,H=c.height=innerHeight;
 onresize=()=>{W=c.width=innerWidth;H=c.height=innerHeight};
-let ht=0,p,en=[],bu=[],ge=[],pt=[],ft=[],k={},joy={a:0,sx:0,sy:0,dx:0,dy:0},t=0,lt=0,st=0,bt=0,kl=0,run=0,an=0;
-function selH(n){ht=n;[0,1,2].forEach(i=>document.getElementById("h"+i).className=i==n?"hc sel":"hc")}
+let ht=0,p,en=[],bu=[],ge=[],ft=[],k={},joy={a:0,sx:0,sy:0,dx:0,dy:0},t=0,lt=0,st=0,bt=0,kl=0,run=0,an=0;
+function selH(n){ht=n;for(let i=0;i<3;i++)document.getElementById("h"+i).className=i==n?"hc sel":"hc"}
 onkeydown=e=>k[e.key.toLowerCase()]=1;onkeyup=e=>k[e.key.toLowerCase()]=0;
 c.ontouchstart=e=>{let q=e.touches.item(0);if(q)joy={a:1,sx:q.clientX,sy:q.clientY,dx:0,dy:0}};
 c.ontouchmove=e=>{let q=e.touches.item(0);if(joy.a&&q){let vx=q.clientX-joy.sx,vy=q.clientY-joy.sy,d=Math.hypot(vx,vy);if(d>0){let cl=Math.min(d,45);joy.dx=vx/d*(cl/45);joy.dy=vy/d*(cl/45)}}};
@@ -35,7 +35,7 @@ c.ontouchend=()=>joy.a=0;
 document.getElementById("go").onclick=()=>{
   document.getElementById("st").classList.add("hid");
   p={x:0,y:0,hp:ht==2?140:100,mhp:ht==2?140:100,s:ht==1?250:220,l:1,xp:0,nx:8,fr:ht==1?.4:.55,ft:0,d:ht==2?34:28,m:1,au:0,dir:0};
-  en=[];bu=[];ge=[];pt=[];ft=[];t=0;st=0;bt=0;kl=0;run=1;lt=performance.now();requestAnimationFrame(lp);
+  en=[];bu=[];ge=[];ft=[];t=0;st=0;bt=0;kl=0;run=1;lt=performance.now();requestAnimationFrame(lp);
 };
 function lvl(){
   run=0;const b=document.getElementById("cb");b.innerHTML="";
